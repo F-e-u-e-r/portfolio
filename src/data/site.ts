@@ -38,15 +38,17 @@ export const capabilities = [
 export type CapabilityKey = (typeof capabilities)[number]['key'];
 
 // Information architecture (§3). `soon` marks Writing as "to be launched" (§28).
+// `primary` items show in the desktop header; the rest (Soon routes) live in the
+// footer + mobile menu — all remain reachable, but the header stays to 5 live sections.
 export const nav = [
-  { label: 'Case Studies', href: '/case-studies/' },
-  { label: 'Journey', href: '/journey/' },
-  { label: 'Lab', href: '/lab/' },
-  { label: 'Internal Builds', href: '/internal-builds/' },
+  { label: 'Case Studies', href: '/case-studies/', primary: true },
+  { label: 'Journey', href: '/journey/', primary: true },
+  { label: 'Lab', href: '/lab/', primary: true },
+  { label: 'Internal Builds', href: '/internal-builds/', soon: true },
   { label: 'Writing', href: '/writing/', soon: true },
-  { label: 'Topics', href: '/topics/' },
-  { label: 'About', href: '/about/' },
-  { label: 'Contact', href: '/contact/' },
+  { label: 'Topics', href: '/topics/', soon: true },
+  { label: 'About', href: '/about/', primary: true },
+  { label: 'Contact', href: '/contact/', primary: true },
 ] as const;
 
 // Working principles (§30) — operating philosophy, each backed by case evidence.

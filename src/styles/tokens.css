@@ -16,7 +16,7 @@
 
   --c-fg:            #e8efeb;
   --c-fg-muted:      #9aa8a2;
-  --c-fg-subtle:     #64726c;
+  --c-fg-subtle:     #828f88;   /* WCAG AA (≥4.5:1) on bg + all card surfaces */
 
   --c-accent:          #35e0a1;   /* refined Matrix green */
   --c-accent-2:        #6bf0c0;

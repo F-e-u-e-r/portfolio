@@ -28,7 +28,6 @@ const capEvidence = capabilities.map((cap) => ({
       <a class="btn btn--primary" href="/case-studies/">Explore case studies</a>
       <a class="btn btn--ghost" href="/journey/">See the journey</a>
     </div>
-    <p class="hero__alias subtle mono">{identity.githubAliasNote}</p>
   </section>
 
   <!-- Capability strip (§4) -->
@@ -85,6 +84,7 @@ const capEvidence = capabilities.map((cap) => ({
                   <span class:list={['dot', { 'dot--last': idx === arr.length - 1 }]} title={m.title}></span>
                 ))}
               </div>
+              <span class="sr-only">Milestones: {row.milestones.map((m) => m.title).join(', ')}</span>
               <StatusBadge status={row.status} />
             </li>
           ))}
@@ -138,7 +138,7 @@ const capEvidence = capabilities.map((cap) => ({
         <h3>Technical evidence layer</h3>
         <ul class="teaser__list">
           {lab.slice(0, 5).map((l) => (
-            <li><a href="/lab/">{l.data.title}</a> <span class="subtle mono">{l.data.status}</span></li>
+            <li><span>{l.data.title}</span> <StatusBadge status={l.data.status} /></li>
           ))}
         </ul>
         <a class="link-more" href="/lab/">Open the Lab →</a>
@@ -253,6 +253,6 @@ const capEvidence = capabilities.map((cap) => ({
     .case-grid, .teaser-grid, .principles { grid-template-columns: 1fr; }
     .journey { grid-template-columns: 1fr; gap: 1.75rem; }
     .stream__row { grid-template-columns: 1fr auto; }
-    .stream__track { display: none; }
+    .stream__track { grid-column: 1 / -1; overflow-x: auto; padding-bottom: 0.25rem; }
   }
 </style>

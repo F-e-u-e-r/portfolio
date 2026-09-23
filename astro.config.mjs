@@ -14,7 +14,8 @@ export default defineConfig({
   },
   // Prefetch is a subtle, professional enhancement (Motion Hierarchy §37, level 4).
   prefetch: {
-    prefetchAll: false,
+    // Hover-prefetch internal links (subtle, level-4 motion §37).
+    prefetchAll: true,
     defaultStrategy: 'hover',
   },
 });

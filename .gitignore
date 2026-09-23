@@ -24,4 +24,5 @@ npm-debug.log*
 # local tooling / scratch (not part of the site)
 .claude/
 .playwright-mcp/
-home-full.png
+.playwright-cli/
+/*.png

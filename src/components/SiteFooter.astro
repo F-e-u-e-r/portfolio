@@ -21,7 +21,7 @@ const year = new Date().getFullYear();
         <p class="subtle foot-alias">{identity.githubAliasNote}</p>
       </div>
       <nav class="foot-nav" aria-label="Footer">
-        {nav.map((i) => <a href={i.href}>{i.label}</a>)}
+        {nav.map((i) => <a href={i.href}>{i.label}{('soon' in i && i.soon) && <span class="foot-soon">Soon</span>}</a>)}
       </nav>
     </div>
 
@@ -36,6 +36,9 @@ const year = new Date().getFullYear();
   .foot-grid { display: flex; flex-wrap: wrap; gap: 2rem; justify-content: space-between; margin-top: 2.5rem; }
   .foot-alias { max-width: 22rem; margin-top: 0.5rem; }
   .foot-nav { display: grid; grid-template-columns: repeat(2, auto); gap: 0.5rem 2rem; }
-  .foot-nav a { color: var(--c-fg-muted); font-size: var(--text-sm); }
+  .foot-nav a { color: var(--c-fg-muted); font-size: var(--text-sm); display: inline-flex; align-items: center; gap: 0.35rem; }
+  .foot-soon { font-family: var(--font-mono); font-size: 0.55rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c-accent-dim); }
   .foot-legal { margin-top: 2.5rem; font-size: var(--text-xs); }
+  /* Clear the fixed desktop pet (§14) so it never sits on the copyright line. */
+  @media (min-width: 1025px) { .site-footer { padding-bottom: 5rem; } }
 </style>

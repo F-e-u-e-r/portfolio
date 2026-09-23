@@ -48,28 +48,30 @@
 <script>
   const boot = document.getElementById('matrix-boot');
   if (boot) {
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let seen = false;
-    try { seen = sessionStorage.getItem('boot-seen') === '1'; } catch {}
+    const html = document.documentElement;
+    const markSeen = () => { try { localStorage.setItem('boot-seen', '1'); } catch {} };
 
-    const finish = () => {
-      boot.classList.add('is-done');
-      const done = () => boot.remove();
-      boot.addEventListener('transitionend', done, { once: true });
-      setTimeout(done, 600);
-      try { sessionStorage.setItem('boot-seen', '1'); } catch {}
-      document.documentElement.removeAttribute('data-booting');
-    };
-
-    document.documentElement.setAttribute('data-booting', '');
-    const pctEl = document.getElementById('boot-pct');
-
-    if (seen) {
-      finish();
-    } else if (reduce) {
-      if (pctEl) pctEl.textContent = '100%';
-      setTimeout(finish, 260);
+    // The blocking head script sets data-boot-skip for repeat visits and
+    // reduced-motion — the overlay is already CSS-hidden, so just remove it.
+    if (html.hasAttribute('data-boot-skip')) {
+      boot.remove();
+      markSeen();
     } else {
+      const pctEl = document.getElementById('boot-pct');
+      html.setAttribute('data-booting', '');
+      // Make the rest of the page inert while the overlay is up, so keyboard/AT
+      // focus cannot leak behind it during the first-visit boot.
+      const bg = Array.from(document.body.children).filter((el) => el !== boot);
+      bg.forEach((el) => el.setAttribute('inert', ''));
+      const finish = () => {
+        boot.classList.add('is-done');
+        const done = () => boot.remove();
+        boot.addEventListener('transitionend', done, { once: true });
+        setTimeout(done, 600);
+        markSeen();
+        html.removeAttribute('data-booting');
+        bg.forEach((el) => el.removeAttribute('inert'));
+      };
       const canvas = document.getElementById('matrix-boot-canvas') as HTMLCanvasElement | null;
       const ctx = canvas ? canvas.getContext('2d') : null;
       const start = performance.now();
