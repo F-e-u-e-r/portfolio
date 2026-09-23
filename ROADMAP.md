@@ -10,6 +10,8 @@ Scope is frozen at **v1.0** — rationale in [`docs/DECISIONS.md`](docs/DECISION
 
 ### 2026-09-24
 
+- **~02:10 — `tradingview-mcp` made private** and removed from public-repository / portfolio scope: Lab entry deleted, standard's derivative tier removed as empty (forks are now Tier B), issue #1 items removed; the review record keeps its historical findings with a post-review note.
+- **~02:00 — Step 2 COMPLETE** — portfolio PR #6 (`6cee668`: README wording, ROADMAP state, Opus Pack journey chronology with evidence pointers, AI Pet Usage in Lab, `opus-pack` → `skills` rename record, deploy-readiness decisions) and the `tradingview-mcp` README truth-fix PR #28 (`41ff043`) merged.
 - **~01:20 — Issue #1 re-based** — body replaced by a six-step implementation checklist that references the standard by section; the original 2026-09-23 body is preserved in the review record's Appendix A.
 - **01:09 — PR #5 merged** (`cc9cb86`) — [`docs/PUBLIC_REPO_STANDARD.md`](docs/PUBLIC_REPO_STANDARD.md) v1 (tiers, description, top fold, topics, releases with the `ai-pet-usage` governed exception, five-state status, integrity, licensing state) + [`docs/reviews/2026-09-24-public-repo-metadata-review.md`](docs/reviews/2026-09-24-public-repo-metadata-review.md) + DECISIONS entries.
 - **~00:00–00:50 — Public-repo metadata review** — three independent Sonnet 5 read-only gates (metadata audit, integrity critic, release-tooling trace); every material finding reproduced first-hand and GitHub state verified unchanged afterwards. Found: issue #1 had drifted from the consolidated standard; the `ai-pet-usage` tag scheme is a runtime/distribution contract (updater, release workflow, Homebrew cask); the Opus Pack journey row was the review's illustrative example verbatim.
@@ -94,7 +96,9 @@ Grok 4.6 (high) ran twice via `xcheck --grok`, each on two packets (the prior GP
 
 ## Next
 
-- Issue #1 steps 2–6 per `docs/PUBLIC_REPO_STANDARD.md` — step 2 (integrity fixes: README wording, ROADMAP, Opus Pack journey row, Lab entry for `ai-pet-usage`, `tradingview-mcp` README identity) in progress.
+- **Step 2 — COMPLETE.** `portfolio` PR #6 and the TradingView README truth-fix PR merged; `tradingview-mcp` made private and removed from public-repository / portfolio scope.
+- **Step 3 — Release semantics** (active, per `docs/PUBLIC_REPO_STANDARD.md` §5): `skills` (Opus Pack) `v0.1.16` pre-release with README badge + `checks.py` updated in the same change; StarLedger `v1.3.0-alpha.1` Release + `v1.2.0-alpha.1` title disambiguated; StarLedger Template `v1.2.0-alpha.1` Release; Worldview Council next genuine release only; AI Pet Usage unchanged.
+- Then step 4 metadata batch → step 5 top folds / licensing state / provenance → step 6 extensions.
 - Re-run xcheck round 2 after the quota resets.
 - MVP content pass (Phase 2): real RAG + Sales-to-Ops case content, journey milestones, About, LinkedIn + resume, web fonts.
 - Deploy to Cloudflare (`wrangler login` → `wrangler deploy`) and wire `ccso.shsl.world` — deploy readiness per `docs/DECISIONS.md`: `robots.txt` + sitemap, `noindex` on maintenance/placeholder pages, AI-crawler policy.

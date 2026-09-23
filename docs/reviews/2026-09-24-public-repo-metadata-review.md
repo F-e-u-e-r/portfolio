@@ -4,6 +4,8 @@ Review of the `F-e-u-e-r` public repositories, [issue #1](https://github.com/F-e
 
 > **Post-review note (2026-09-24): `F-e-u-e-r/opus-pack` was renamed to `F-e-u-e-r/skills` after this audit. Historical references below retain the repository name that was current when the review was performed. The project name remains Opus Pack.**
 
+> **Post-review note (2026-09-24): `tradingview-mcp` was subsequently made private and removed from the portfolio and public-repository standard. Historical findings below reflect the repository state at the time of the audit.**
+
 ## Method
 
 - **Orchestrator:** Claude Fable 5.1 (Claude Code). Own audit written to file *before* any gate output was read.
