@@ -2,6 +2,8 @@
 
 Review of the `F-e-u-e-r` public repositories, [issue #1](https://github.com/F-e-u-e-r/portfolio/issues/1) (the 2026-09-23 metadata audit) and the owner's consolidated portfolio review (§1–§20), producing [`docs/PUBLIC_REPO_STANDARD.md`](../PUBLIC_REPO_STANDARD.md) and the re-based issue #1 checklist. Timestamps UTC+8.
 
+> **Post-review note (2026-09-24): `F-e-u-e-r/opus-pack` was renamed to `F-e-u-e-r/skills` after this audit. Historical references below retain the repository name that was current when the review was performed. The project name remains Opus Pack.**
+
 ## Method
 
 - **Orchestrator:** Claude Fable 5.1 (Claude Code). Own audit written to file *before* any gate output was read.

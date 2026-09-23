@@ -64,6 +64,7 @@ npm run check    # astro check (types + content schema)
 | [`src/styles/`](src/styles) | `tokens.css` (design tokens) + `global.css` (base). |
 | [`wrangler.toml`](wrangler.toml) | Cloudflare Workers Static Assets config (§34). |
 | [`docs/DECISIONS.md`](docs/DECISIONS.md) | Decision log. |
+| [`docs/PUBLIC_REPO_STANDARD.md`](docs/PUBLIC_REPO_STANDARD.md) | Metadata standard for the public repositories (tiers, description, top fold, topics, releases, status). |
 | [`ROADMAP.md`](ROADMAP.md) | Progress log + output summary + cross-model (xcheck) results. |
 
 ## 🧭 Status system
@@ -72,4 +73,4 @@ Every project uses one status vocabulary (§38): `LIVE · ACTIVE · PROTOTYPE ·
 
 ## ⚖️ Notes
 
-Private repository, pre-launch. GitHub builds referenced by cases are published under the alias **Feuer**.
+Pre-launch; public for review. GitHub builds referenced by cases are published under the alias **Feuer**.

@@ -12,7 +12,7 @@ Decisions behind this standard (D1–D10) and the review that produced it: [`rev
 
 | Tier | Repositories | What applies |
 | --- | --- | --- |
-| **A — Original** | `portfolio`, `starledger`, `starledger-template`, `ai-pet-usage`, `opus-pack`, `tailscale-ai-egress`, `religion-council`, `ai-arena` | §2–§7 in full; §8 back-link after the portfolio launches |
+| **A — Original** | `portfolio`, `starledger`, `starledger-template`, `ai-pet-usage`, `skills` (project name: Opus Pack; repository renamed from `opus-pack` on 2026-09-24), `tailscale-ai-egress`, `religion-council`, `ai-arena` | §2–§7 in full; §8 back-link after the portfolio launches |
 | **B — Derivative / hardened build** (hygiene only) | `tradingview-mcp` | §2 (description names the upstream), §3 (provenance in the first paragraph), §4, §6, §9. Releases optional. No §8 back-link. Not normalised as an original build. |
 | **C — Fork / reference** | `tradingview-mcp-review` (archived), `tradingview-mcp-atila-ref`, `jianying-headless` | Provenance only: archived, or description reads `Reference fork of <upstream> — not maintained`. Nothing else is normalised. |
 | **Distribution glue** | `homebrew-tap` | Minimal README, explicit licensing state (§9), topics. No product sections. Releases follow the app. |
@@ -33,7 +33,7 @@ Decisions behind this standard (D1–D10) and the review that produced it: [`rev
 | starledger-template | Deploy your own GitHub-stars dashboard on infrastructure you own — no backend, no key custody. |
 | ai-pet-usage | 🐾 macOS menu-bar desktop pet that reacts to your AI usage — quota, token burn, cost and work rhythm. Local-first. |
 | homebrew-tap | *(keep)* Homebrew tap for AI Pet Usage (macOS menu-bar AI-usage pet) |
-| opus-pack | Claude Code plugin marketplace for agent discipline, reusable skills, executable gates and evaluation. |
+| skills (Opus Pack) | Claude Code plugin marketplace for agent discipline, reusable skills, executable gates and evaluation. |
 | tailscale-ai-egress | Tailscale App Connector + exit-node toolkit — route only selected AI domains through a VPS egress IP, with failover. |
 | tradingview-mcp *(B)* | Review-only MCP bridge for TradingView Desktop — 7 tools over a loopback CDP boundary. Hardened derivative of tradesdontlie/tradingview-mcp. |
 | religion-council | Worldview Council — source-grounded multi-agent deliberation with citation verification and fail-closed controls. |
@@ -72,8 +72,8 @@ A cross-repository **capability taxonomy**, not marketing keywords.
   - **Artifact / domain** — `portfolio`, `case-studies`, `business-transformation`, `desktop-pet`, `desktop-app`, `github-stars`, `dashboard`, `github-template`, `mcp`, `tradingview`, `app-connector`, `exit-node`, `philosophy`, `llm-comparison`, `agent-skills`, `claude-code-plugin`, `developer-tools`, `homebrew-tap`, `homebrew-cask`
   - **Platform / implementation** — `macos`, `swiftui`, `github-pages`, `static-site`, `typescript`, `react`, `tailscale`, `networking`, `shell`, `nodejs`, `chrome-devtools-protocol`, `astro`, `cloudflare-workers`, `claude-code`, `codex`
 - No synonym pairs (`ai-agents`/`multi-agent-systems`, `ai-comparison`/`llm-comparison`, `token-usage`/`usage-tracking`/`cost-tracking`, `anthropic`/`claude`/`claude-code`).
-- `applied-ai` is an umbrella only on Tier A repos that are Applied-AI evidence: `ai-arena`, `opus-pack`, `religion-council`. It is not a personal-brand tag.
-- `governance`, `evaluation`, `security`, `privacy` and similar are added only where the repository demonstrates them (§7). Current calls: no `governance` on `opus-pack`; no `evaluation` on `ai-arena` (a comparison gallery, not a scored benchmark) — use `llm-comparison`; `security` on `tradingview-mcp` is supported by its README "Security boundary" section and CI-enforced tool allowlist.
+- `applied-ai` is an umbrella only on Tier A repos that are Applied-AI evidence: `ai-arena`, `skills` (Opus Pack), `religion-council`. It is not a personal-brand tag.
+- `governance`, `evaluation`, `security`, `privacy` and similar are added only where the repository demonstrates them (§7). Current calls: no `governance` on `skills` (Opus Pack); no `evaluation` on `ai-arena` (a comparison gallery, not a scored benchmark) — use `llm-comparison`; `security` on `tradingview-mcp` is supported by its README "Security boundary" section and CI-enforced tool allowlist.
 
 | Repo | Now | Target (4–8) |
 | --- | --- | --- |
@@ -82,7 +82,7 @@ A cross-repository **capability taxonomy**, not marketing keywords.
 | starledger-template | 0 | `github-template` `github-stars` `dashboard` `self-hosted` `github-pages` `typescript` |
 | ai-pet-usage | 16 | `desktop-pet` `desktop-app` `usage-tracking` `local-first` `macos` `swiftui` `claude-code` `codex` |
 | homebrew-tap | 0 | `homebrew-tap` `homebrew-cask` `macos` |
-| opus-pack | 8 | `applied-ai` `agent-skills` `ai-agents` `evaluation` `claude-code-plugin` `claude-code` `developer-tools` |
+| skills (Opus Pack) | 8 | `applied-ai` `agent-skills` `ai-agents` `evaluation` `claude-code-plugin` `claude-code` `developer-tools` |
 | tailscale-ai-egress | 0 | `egress` `failover` `app-connector` `exit-node` `tailscale` `networking` `shell` |
 | tradingview-mcp *(B)* | 0 | `mcp` `security` `tradingview` `chrome-devtools-protocol` `nodejs` |
 | religion-council | 13 | `applied-ai` `ai-agents` `source-grounding` `citation-verification` `rag` `philosophy` `mcp` `claude-code` |
@@ -112,7 +112,7 @@ Migration:  planned with the beta / notarisation release work — one coordinate
             CFBundleShortVersionString carries the pre-release suffix.
 ```
 
-- `opus-pack`: the version of record is `.claude-plugin/plugin.json` (`0.1.16`), cross-checked against `marketplace.json` and the README badge by `.github/checks.py`; git tags were decoupled from it by design (last tag `alpha-0.1.2`). Canonical release: **`v0.1.16` with the pre-release flag** (decision D3 — no `-alpha.1`, which would mint a second version). From then on every `plugin.json` bump gets a matching `vX.Y.Z` tag and Release; the README badge becomes `v0.1.16`, with `checks.py` updated in the same PR.
+- `skills` (Opus Pack): the version of record is `.claude-plugin/plugin.json` (`0.1.16`), cross-checked against `marketplace.json` and the README badge by `.github/checks.py`; git tags were decoupled from it by design (last tag `alpha-0.1.2`). Canonical release: **`v0.1.16` with the pre-release flag** (decision D3 — no `-alpha.1`, which would mint a second version). From then on every `plugin.json` bump gets a matching `vX.Y.Z` tag and Release; the README badge becomes `v0.1.16`, with `checks.py` updated in the same PR.
 
 | Repo | Tags today | Next canonical release |
 | --- | --- | --- |
@@ -121,7 +121,7 @@ Migration:  planned with the beta / notarisation release work — one coordinate
 | starledger-template | `v1.2.0-alpha.1`, `v1.1.0-alpha.5` | Release for `v1.2.0-alpha.1` |
 | ai-pet-usage | `alpha-v0.2.0` … | exception — stays `alpha-v*` until the governed migration |
 | homebrew-tap | none | none — follows the app |
-| opus-pack | `alpha-0.1.2` (decoupled) | `v0.1.16` (pre-release) |
+| skills (Opus Pack) | `alpha-0.1.2` (decoupled) | `v0.1.16` (pre-release) |
 | tailscale-ai-egress | `v1.4.0` … (conforming) | none needed |
 | tradingview-mcp *(B)* | none | optional `v0.1.0` after the README identity fix |
 | religion-council | `v0.13.1` … (conforming; stray `v0.1` stays) | next `v0.14.0`, titled "Worldview Council …" |
@@ -144,7 +144,7 @@ Badge: `![status](https://img.shields.io/badge/status-ACTIVE-7aa2ff)` (LIVE `2ee
 | Repo | Status |
 | --- | --- |
 | portfolio | BUILDING → LIVE at launch |
-| starledger · starledger-template · ai-pet-usage · opus-pack · religion-council | ACTIVE |
+| starledger · starledger-template · ai-pet-usage · skills (Opus Pack) · religion-council | ACTIVE |
 | tailscale-ai-egress · ai-arena | LIVE |
 | tradingview-mcp *(B)* | PROTOTYPE |
 | homebrew-tap | none |
@@ -172,3 +172,4 @@ Every public repository has an explicit, deliberate licensing state — which is
 ## 10. Changes to this standard
 
 - **2026-09-24 — v1.** Established from the consolidated portfolio review (§11–§18) and decisions D1–D10; supersedes the "ai-pet-usage README as gold standard" approach of the original issue #1.
+- **2026-09-24 — repository rename.** `opus-pack` was renamed to `skills` by the owner; the project name remains Opus Pack. Current references here use `skills`; the review record keeps the name that was current at audit time.
