@@ -44,7 +44,7 @@ export const nav = [
   { label: 'Lab', href: '/lab/' },
   { label: 'Internal Builds', href: '/internal-builds/' },
   { label: 'Writing', href: '/writing/', soon: true },
-  { label: 'Topics', href: '/topics/' },
+  { label: 'Topics', href: '/topics/', soon: true },
   { label: 'About', href: '/about/' },
   { label: 'Contact', href: '/contact/' },
 ] as const;

@@ -60,7 +60,7 @@ const capLabels: Record<string, string> = {
         {d.demo && <a class="btn btn--ghost" href={d.demo} target="_blank" rel="noopener">Live demo ↗</a>}
       </div>
       <ul class="evidence__list">
-        {d.evidence.map((e) => (
+        {d.evidence.filter((e) => e.type !== 'github' && e.type !== 'live-demo').map((e) => (
           <li>
             <span class="mono subtle etype">{e.type}</span>
             {e.url ? <a href={e.url} target="_blank" rel="noopener">{e.label} ↗</a> : <span>{e.label}</span>}

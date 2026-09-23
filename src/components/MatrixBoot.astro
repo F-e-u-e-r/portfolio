@@ -48,29 +48,25 @@
 <script>
   const boot = document.getElementById('matrix-boot');
   if (boot) {
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let seen = false;
-    try { seen = sessionStorage.getItem('boot-seen') === '1'; } catch {}
+    const html = document.documentElement;
+    const markSeen = () => { try { localStorage.setItem('boot-seen', '1'); } catch {} };
 
-    const finish = () => {
-      boot.classList.add('is-done');
-      const done = () => boot.remove();
-      boot.addEventListener('transitionend', done, { once: true });
-      setTimeout(done, 600);
-      try { sessionStorage.setItem('boot-seen', '1'); } catch {}
-      document.documentElement.removeAttribute('data-booting');
-    };
-
-    const pctEl = document.getElementById('boot-pct');
-
-    if (seen) {
-      boot.remove(); // repeat visit: remove instantly, no fade, no scroll lock
-    } else if (reduce) {
-      document.documentElement.setAttribute('data-booting', '');
-      if (pctEl) pctEl.textContent = '100%';
-      setTimeout(finish, 260);
+    // The blocking head script sets data-boot-skip for repeat visits and
+    // reduced-motion — the overlay is already CSS-hidden, so just remove it.
+    if (html.hasAttribute('data-boot-skip')) {
+      boot.remove();
+      markSeen();
     } else {
-      document.documentElement.setAttribute('data-booting', '');
+      const pctEl = document.getElementById('boot-pct');
+      html.setAttribute('data-booting', '');
+      const finish = () => {
+        boot.classList.add('is-done');
+        const done = () => boot.remove();
+        boot.addEventListener('transitionend', done, { once: true });
+        setTimeout(done, 600);
+        markSeen();
+        html.removeAttribute('data-booting');
+      };
       const canvas = document.getElementById('matrix-boot-canvas') as HTMLCanvasElement | null;
       const ctx = canvas ? canvas.getContext('2d') : null;
       const start = performance.now();

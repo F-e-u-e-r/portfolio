@@ -25,4 +25,4 @@ npm-debug.log*
 .claude/
 .playwright-mcp/
 .playwright-cli/
-home-full.png
+/*.png

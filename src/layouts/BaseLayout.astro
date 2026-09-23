@@ -48,6 +48,14 @@ const ogImage = new URL('/og.png', siteOrigin).href;
     <meta name="twitter:image" content={ogImage} />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
+    <script is:inline>
+      // Skip the boot overlay before first paint on repeat visits / reduced-motion (no flash).
+      try {
+        var rm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (rm || localStorage.getItem('boot-seen') === '1') document.documentElement.setAttribute('data-boot-skip', '');
+      } catch (e) {}
+    </script>
+    <style is:inline>html[data-boot-skip] #matrix-boot { display: none !important; }</style>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>

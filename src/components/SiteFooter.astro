@@ -38,4 +38,6 @@ const year = new Date().getFullYear();
   .foot-nav { display: grid; grid-template-columns: repeat(2, auto); gap: 0.5rem 2rem; }
   .foot-nav a { color: var(--c-fg-muted); font-size: var(--text-sm); }
   .foot-legal { margin-top: 2.5rem; font-size: var(--text-xs); }
+  /* Clear the fixed desktop pet (§14) so it never sits on the copyright line. */
+  @media (min-width: 1025px) { .site-footer { padding-bottom: 5rem; } }
 </style>
