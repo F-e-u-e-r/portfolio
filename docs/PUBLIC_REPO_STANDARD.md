@@ -63,7 +63,7 @@ Rules:
 
 A cross-repository **capability taxonomy**, not marketing keywords.
 
-- **4–8 topics** per repository, lowercase and hyphenated, each supportable by the README, the implementation or release evidence.
+- **Tier A: 4–8 topics** per repository. **Distribution glue: the minimum useful set** — 2–4 is acceptable (`homebrew-tap` stays at `homebrew-tap`, `homebrew-cask`, `macos`; a fourth topic is not invented to meet a quota). Lowercase and hyphenated, each supportable by the README, the implementation or release evidence.
 - Pick from three categories, and every Tier A repo carries at least one topic from the first two — never only implementation tags:
   - **Capability** — `applied-ai`, `evaluation`, `ai-agents`, `automation`, `workflow-automation`, `rag`, `source-grounding`, `citation-verification`, `usage-tracking`, `local-first`, `self-hosted`, `failover`, `egress`
   - **Artifact / domain** — `portfolio`, `case-studies`, `business-transformation`, `desktop-pet`, `desktop-app`, `github-stars`, `dashboard`, `github-template`, `mcp`, `app-connector`, `exit-node`, `philosophy`, `llm-comparison`, `agent-skills`, `claude-code-plugin`, `developer-tools`, `homebrew-tap`, `homebrew-cask`
@@ -72,7 +72,7 @@ A cross-repository **capability taxonomy**, not marketing keywords.
 - `applied-ai` is an umbrella only on Tier A repos that are Applied-AI evidence: `ai-arena`, `skills` (Opus Pack), `religion-council`. It is not a personal-brand tag.
 - `governance`, `evaluation`, `security`, `privacy` and similar are added only where the repository demonstrates them (§7). Current calls: no `governance` on `skills` (Opus Pack); no `evaluation` on `ai-arena` (a comparison gallery, not a scored benchmark) — use `llm-comparison`.
 
-| Repo | Now | Target (4–8) |
+| Repo | Now | Target |
 | --- | --- | --- |
 | portfolio | 0 | `portfolio` `case-studies` `business-transformation` `astro` `static-site` `cloudflare-workers` |
 | starledger | 6 | `github-stars` `dashboard` `self-hosted` `automation` `github-pages` `typescript` `react` |
