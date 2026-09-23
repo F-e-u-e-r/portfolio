@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="System status" description="Portfolio temporarily unavailable." boot={false} chromeless={true}>
+  <section class="maint">
+    <div class="maint__panel">
+      <p class="eyebrow">System status</p>
+      <p class="maint__state">DEGRADED</p>
+      <p class="maint__msg">Portfolio temporarily unavailable. The system is being restored.</p>
+      <ul class="maint__checks">
+        <li>Architecture <span class="ok">✓</span></li>
+        <li>Evaluation <span class="ok">✓</span></li>
+        <li>Case studies <span class="ok">✓</span></li>
+        <li>Live demo <span class="warn">degraded</span></li>
+      </ul>
+      <a class="btn btn--ghost" href="/">Return home</a>
+    </div>
+  </section>
+</BaseLayout>
+<style>
+  .maint { min-height: 80vh; display: grid; place-items: center; padding: var(--gutter); }
+  .maint__panel { text-align: center; max-width: 30rem; }
+  .maint__state { font-family: var(--font-mono); font-size: clamp(2.5rem, 10vw, 4rem); font-weight: 700; color: var(--c-warning); letter-spacing: 0.1em; margin: 0.5rem 0; text-shadow: 0 0 24px rgba(242, 193, 78, 0.25); }
+  .maint__msg { color: var(--c-fg-muted); }
+  .maint__checks { list-style: none; padding: 0; margin: 1.75rem 0; display: inline-flex; flex-direction: column; gap: 0.5rem; text-align: left; font-family: var(--font-mono); font-size: var(--text-sm); }
+  .maint__checks li { display: flex; justify-content: space-between; gap: 2rem; color: var(--c-fg-muted); }
+  .ok { color: var(--c-accent); }
+  .warn { color: var(--c-warning); }
+</style>

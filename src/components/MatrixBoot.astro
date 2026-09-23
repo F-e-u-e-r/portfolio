@@ -1,0 +1,110 @@
+---
+// Matrix Boot (§5): first-visit system-initialisation overlay.
+// Short (~0.7–1.2s), skipped on repeat visits, static/minimal under reduced-motion.
+---
+<div id="matrix-boot" aria-hidden="true">
+  <canvas id="matrix-boot-canvas"></canvas>
+  <div class="boot-center">
+    <p class="boot-label">INITIALISING PORTFOLIO</p>
+    <p class="boot-pct" id="boot-pct">0%</p>
+    <div class="boot-bars"><span></span><span></span><span></span></div>
+  </div>
+</div>
+
+<noscript><style>#matrix-boot { display: none !important; }</style></noscript>
+
+<style>
+  :global(html[data-booting]) { overflow: hidden; }
+  #matrix-boot {
+    position: fixed; inset: 0; z-index: var(--z-boot);
+    background: #040706; display: grid; place-items: center;
+    opacity: 1; transition: opacity 420ms var(--ease-out);
+  }
+  #matrix-boot.is-done { opacity: 0; pointer-events: none; }
+  #matrix-boot-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .boot-center { position: relative; text-align: center; font-family: var(--font-mono); }
+  .boot-label {
+    font-size: var(--text-xs); letter-spacing: var(--tracking-mono);
+    color: var(--c-accent); text-transform: uppercase;
+  }
+  .boot-pct {
+    font-size: clamp(2.5rem, 9vw, 4.5rem); font-weight: 600; color: var(--c-fg);
+    margin-top: 0.4rem; font-variant-numeric: tabular-nums; text-shadow: 0 0 24px var(--c-glow);
+  }
+  .boot-bars { display: flex; gap: 0.35rem; justify-content: center; margin-top: 1rem; }
+  .boot-bars span {
+    width: 42px; height: 3px; background: var(--c-accent-dim); border-radius: 2px;
+    animation: bootpulse 1s var(--ease-in-out) infinite;
+  }
+  .boot-bars span:nth-child(2) { animation-delay: 0.15s; }
+  .boot-bars span:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes bootpulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; background: var(--c-accent); } }
+  @media (prefers-reduced-motion: reduce) {
+    #matrix-boot-canvas { display: none; }
+    .boot-bars span { animation: none; }
+  }
+</style>
+
+<script>
+  const boot = document.getElementById('matrix-boot');
+  if (boot) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let seen = false;
+    try { seen = sessionStorage.getItem('boot-seen') === '1'; } catch {}
+
+    const finish = () => {
+      boot.classList.add('is-done');
+      const done = () => boot.remove();
+      boot.addEventListener('transitionend', done, { once: true });
+      setTimeout(done, 600);
+      try { sessionStorage.setItem('boot-seen', '1'); } catch {}
+      document.documentElement.removeAttribute('data-booting');
+    };
+
+    document.documentElement.setAttribute('data-booting', '');
+    const pctEl = document.getElementById('boot-pct');
+
+    if (seen) {
+      finish();
+    } else if (reduce) {
+      if (pctEl) pctEl.textContent = '100%';
+      setTimeout(finish, 260);
+    } else {
+      const canvas = document.getElementById('matrix-boot-canvas') as HTMLCanvasElement | null;
+      const ctx = canvas ? canvas.getContext('2d') : null;
+      const start = performance.now();
+      const DURATION = 950;
+      const glyphs = '01░▓█ABCDEF<>/=+*'.split('');
+      let cols = 0;
+      let drops: number[] = [];
+      const setup = () => {
+        if (!canvas) return;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        cols = Math.floor(canvas.width / 14);
+        drops = new Array(cols).fill(0).map(() => Math.random() * (canvas.height || 800));
+      };
+      setup();
+
+      let raf = 0;
+      const tick = (now: number) => {
+        const t = Math.min(1, (now - start) / DURATION);
+        if (pctEl) pctEl.textContent = Math.round(t * 100) + '%';
+        if (ctx && canvas) {
+          ctx.fillStyle = 'rgba(4,7,6,0.25)';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = '#35e0a1';
+          ctx.font = '13px monospace';
+          for (let i = 0; i < cols; i++) {
+            const ch = glyphs[(Math.random() * glyphs.length) | 0];
+            ctx.fillText(ch, i * 14, drops[i]);
+            drops[i] = drops[i] > canvas.height && Math.random() > 0.975 ? 0 : drops[i] + 14;
+          }
+        }
+        if (t < 1) { raf = requestAnimationFrame(tick); }
+        else { cancelAnimationFrame(raf); finish(); }
+      };
+      raf = requestAnimationFrame(tick);
+    }
+  }
+</script>

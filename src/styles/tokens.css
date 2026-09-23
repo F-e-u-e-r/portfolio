@@ -1,0 +1,104 @@
+/* =========================================================================
+   Design tokens — Portfolio v1
+   Visual system (§36): ~80% professional · ~15% technical identity · ~5% play
+   Dark-first, Matrix-inspired accent used sparingly.
+   ========================================================================= */
+:root {
+  color-scheme: dark;
+
+  /* ---- Color: dark-first, green-black base ---- */
+  --c-bg:            #080b0a;
+  --c-bg-2:          #0b0f0d;   /* page gradient stop / elevated bg */
+  --c-surface:       #111815;   /* cards, header */
+  --c-surface-2:     #16201c;   /* hover / nested */
+  --c-border:        rgba(120, 200, 170, 0.12);
+  --c-border-strong: rgba(120, 200, 170, 0.24);
+
+  --c-fg:            #e8efeb;
+  --c-fg-muted:      #9aa8a2;
+  --c-fg-subtle:     #64726c;
+
+  --c-accent:          #35e0a1;   /* refined Matrix green */
+  --c-accent-2:        #6bf0c0;
+  --c-accent-dim:      #1f8f68;
+  --c-accent-contrast: #04120c;   /* text on accent fills */
+  --c-glow:            rgba(53, 224, 161, 0.30);
+
+  --c-danger:  #ff6b6b;
+  --c-warning: #f2c14e;
+
+  /* ---- Status system (§38) ---- */
+  --status-live:           #35e0a1;
+  --status-active:         #6bf0c0;
+  --status-prototype:      #f2c14e;
+  --status-building:       #7aa2ff;
+  --status-in-development: #b892ff;
+  --status-archived:       #8a9691;
+
+  /* ---- Typography ---- */
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', monospace;
+
+  --text-xs:  0.75rem;
+  --text-sm:  0.875rem;
+  --text-base: 1rem;
+  --text-lg:  1.125rem;
+  --text-xl:  1.375rem;
+  --text-2xl: 1.75rem;
+  --text-3xl: clamp(2rem, 4vw, 2.75rem);
+  --text-4xl: clamp(2.5rem, 6vw, 4rem);
+  --text-5xl: clamp(3rem, 8vw, 5.5rem);
+
+  --leading-tight: 1.12;
+  --leading-snug:  1.3;
+  --leading-normal: 1.6;
+
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  --tracking-tight: -0.02em;
+  --tracking-wide:  0.02em;
+  --tracking-mono:  0.16em;   /* eyebrows / labels */
+
+  /* ---- Spacing (0.25rem base) ---- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+  --space-10: 8rem;
+
+  /* ---- Radius ---- */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+
+  /* ---- Layout ---- */
+  --container: 72rem;              /* ~1152px */
+  --container-narrow: 46rem;
+  --gutter: clamp(1rem, 4vw, 2rem);
+
+  /* ---- Motion (§37 — restrained) ---- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 160ms;
+  --dur: 280ms;
+  --dur-slow: 600ms;
+
+  /* ---- Elevation ---- */
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-2: 0 10px 40px rgba(0, 0, 0, 0.45);
+  --ring: 0 0 0 1px var(--c-border-strong);
+
+  /* ---- Z-index ---- */
+  --z-header: 50;
+  --z-pet: 60;
+  --z-boot: 100;
+}

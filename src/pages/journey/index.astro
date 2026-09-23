@@ -1,0 +1,72 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import StatusBadge from '../../components/StatusBadge.astro';
+import { spine, buildStream } from '../../data/journey';
+---
+<BaseLayout title="Journey" active="/journey/" boot={false}>
+  <section class="section container">
+    <header class="page-head">
+      <p class="eyebrow">Journey</p>
+      <h1>Professional foundation, then applied AI.</h1>
+      <p class="lead">A curated view of capability evolution — not a GitHub creation-date timeline.</p>
+    </header>
+    <div class="j-grid">
+      <div>
+        <h2 class="j-h">Professional Journey</h2>
+        <ol class="spine">
+          {spine.map((s) => (
+            <li class="spine__node">
+              <span class="spine__year mono">{s.year}</span>
+              <ul class="spine__items">
+                {s.items.length ? s.items.map((it) => <li>{it}</li>) : <li class="subtle">—</li>}
+              </ul>
+            </li>
+          ))}
+        </ol>
+      </div>
+      <div>
+        <h2 class="j-h">Applied AI Build Stream</h2>
+        <ul class="rows">
+          {buildStream.map((row) => (
+            <li class="row">
+              <div class="row__head">
+                <span class="row__name">{row.name}</span>
+                <StatusBadge status={row.status} />
+              </div>
+              <p class="subtle mono row__cap">{row.capability}</p>
+              <ol class="chips">
+                {row.milestones.map((m, i, arr) => (
+                  <li class:list={['chip', { 'chip--last': i === arr.length - 1 }]}>{m.title}</li>
+                ))}
+              </ol>
+            </li>
+          ))}
+        </ul>
+        <p class="subtle note">Milestones are hand-curated capability evolution. GitHub tracks activity; the portfolio explains significance. <span class="mono">(Auto-pan / interaction: Phase 3.)</span></p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+<style>
+  .page-head { max-width: 46rem; margin-bottom: 2.5rem; }
+  .page-head h1 { font-size: var(--text-3xl); margin: 0.5rem 0 0.75rem; }
+  .j-grid { display: grid; grid-template-columns: minmax(200px, 300px) 1fr; gap: 3rem; }
+  .j-h { font-size: var(--text-lg); color: var(--c-fg-muted); margin-bottom: 1.25rem; }
+  .spine { list-style: none; padding: 0; position: relative; }
+  .spine::before { content: ''; position: absolute; left: 5px; top: 6px; bottom: 6px; width: 1px; background: var(--c-border-strong); }
+  .spine__node { position: relative; padding: 0 0 1.25rem 1.5rem; }
+  .spine__node::before { content: ''; position: absolute; left: 0; top: 5px; width: 11px; height: 11px; border-radius: 50%; background: var(--c-bg); border: 2px solid var(--c-accent-dim); }
+  .spine__node:last-child::before { border-color: var(--c-accent); box-shadow: 0 0 10px var(--c-glow); }
+  .spine__year { display: block; color: var(--c-accent); font-size: var(--text-sm); margin-bottom: 0.25rem; }
+  .spine__items { list-style: none; padding: 0; color: var(--c-fg-muted); font-size: var(--text-sm); }
+  .rows { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 1.25rem; }
+  .row { border-bottom: 1px solid var(--c-border); padding-bottom: 1.25rem; }
+  .row__head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .row__name { font-weight: var(--weight-medium); }
+  .row__cap { font-size: var(--text-xs); margin-top: 0.15rem; }
+  .chips { list-style: none; padding: 0; margin-top: 0.75rem; display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.35rem; }
+  .chip { flex: none; font-size: var(--text-xs); font-family: var(--font-mono); color: var(--c-fg-muted); border: 1px solid var(--c-border); border-radius: var(--radius-pill); padding: 0.25rem 0.7rem; white-space: nowrap; }
+  .chip--last { color: var(--c-accent-contrast); background: var(--c-accent); border-color: transparent; }
+  .note { margin-top: 1.5rem; font-size: var(--text-sm); max-width: 42rem; }
+  @media (max-width: 900px) { .j-grid { grid-template-columns: 1fr; gap: 2rem; } }
+</style>

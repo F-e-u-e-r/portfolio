@@ -1,0 +1,41 @@
+---
+import { identity, nav, contact } from '../data/site';
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="container">
+    <section class="foot-cta card">
+      <p class="eyebrow">Contact</p>
+      <h2 class="foot-cta__h">Have a problem worth solving well?</h2>
+      <p class="lead">Business transformation · applied AI · evaluation · governance · adoption.</p>
+      <div class="foot-cta__actions">
+        <a class="btn btn--primary" href={`mailto:${contact.email}`}>Email {contact.email}</a>
+        <a class="btn btn--ghost" href={contact.github} target="_blank" rel="noopener">GitHub / Feuer</a>
+      </div>
+    </section>
+
+    <div class="foot-grid">
+      <div class="foot-id">
+        <p class="brand__name mono">{identity.name}</p>
+        <p class="subtle">{identity.role}</p>
+        <p class="subtle foot-alias">{identity.githubAliasNote}</p>
+      </div>
+      <nav class="foot-nav" aria-label="Footer">
+        {nav.map((i) => <a href={i.href}>{i.label}</a>)}
+      </nav>
+    </div>
+
+    <p class="foot-legal subtle mono">© {year} {identity.name} · {identity.domain}</p>
+  </div>
+</footer>
+<style>
+  .site-footer { border-top: 1px solid var(--c-border); margin-top: 4rem; padding-block: 3.5rem 2.5rem; }
+  .foot-cta { padding: 2rem; display: flex; flex-direction: column; gap: 0.6rem; align-items: flex-start; }
+  .foot-cta__h { font-size: var(--text-2xl); }
+  .foot-cta__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.75rem; }
+  .foot-grid { display: flex; flex-wrap: wrap; gap: 2rem; justify-content: space-between; margin-top: 2.5rem; }
+  .foot-alias { max-width: 22rem; margin-top: 0.5rem; }
+  .foot-nav { display: grid; grid-template-columns: repeat(2, auto); gap: 0.5rem 2rem; }
+  .foot-nav a { color: var(--c-fg-muted); font-size: var(--text-sm); }
+  .foot-legal { margin-top: 2.5rem; font-size: var(--text-xs); }
+</style>

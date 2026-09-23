@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Not found" description="Page not found." boot={false}>
+  <section class="nf container">
+    <p class="eyebrow">404</p>
+    <h1>This route doesn't resolve.</h1>
+    <p class="lead">The page you're after isn't here. Try the case studies or head home.</p>
+    <div class="nf__actions">
+      <a class="btn btn--primary" href="/">Home</a>
+      <a class="btn btn--ghost" href="/case-studies/">Case studies</a>
+    </div>
+  </section>
+</BaseLayout>
+<style>
+  .nf { min-height: 60vh; display: flex; flex-direction: column; justify-content: center; }
+  .nf h1 { font-size: var(--text-3xl); margin: 0.5rem 0 0.75rem; }
+  .nf__actions { display: flex; gap: 0.75rem; margin-top: 1.5rem; }
+</style>

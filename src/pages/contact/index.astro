@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { contact } from '../../data/site';
+const links = [
+  { label: 'Email', value: contact.email, href: `mailto:${contact.email}`, ready: true },
+  { label: 'GitHub / Feuer', value: 'github.com/F-e-u-e-r', href: contact.github, ready: true },
+  { label: 'LinkedIn', value: 'Coming soon', href: contact.linkedin, ready: Boolean(contact.linkedin) },
+  { label: 'Resume', value: 'View Resume', href: contact.resume, ready: Boolean(contact.resume) },
+];
+---
+<BaseLayout title="Contact" active="/contact/" boot={false}>
+  <section class="section container container--narrow">
+    <header class="page-head">
+      <p class="eyebrow">Contact</p>
+      <h1>Get in touch.</h1>
+      <p class="lead">The fastest route is email. Public builds are on GitHub under my alias, Feuer.</p>
+    </header>
+    <ul class="contacts">
+      {links.map((l) => (
+        <li class="contact-row">
+          <span class="contact-row__label mono">{l.label}</span>
+          {l.ready
+            ? <a class="contact-row__val" href={l.href} target={l.href.startsWith('http') ? '_blank' : undefined} rel="noopener">{l.value} →</a>
+            : <span class="contact-row__val subtle">{l.value}</span>}
+        </li>
+      ))}
+    </ul>
+  </section>
+</BaseLayout>
+<style>
+  .page-head { margin-bottom: 2rem; }
+  .page-head h1 { font-size: var(--text-3xl); margin: 0.5rem 0 0.75rem; }
+  .contacts { list-style: none; padding: 0; display: flex; flex-direction: column; }
+  .contact-row { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--c-border); }
+  .contact-row__label { color: var(--c-fg-subtle); font-size: var(--text-sm); }
+  .contact-row__val { font-size: var(--text-lg); }
+</style>

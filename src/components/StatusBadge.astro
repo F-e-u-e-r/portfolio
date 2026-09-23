@@ -1,0 +1,21 @@
+---
+import { STATUS_META } from '../data/site';
+interface Props { status: string; }
+const { status } = Astro.props;
+const meta = STATUS_META[status] ?? { label: status, varName: '--status-archived' };
+---
+<span class="status" style={`--dot: var(${meta.varName})`}>
+  <span class="status__dot"></span>{meta.label}
+</span>
+<style>
+  .status {
+    display: inline-flex; align-items: center; gap: 0.45em;
+    font-family: var(--font-mono); font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wide); text-transform: uppercase;
+    color: var(--c-fg-muted); white-space: nowrap;
+  }
+  .status__dot {
+    width: 0.5rem; height: 0.5rem; border-radius: 50%;
+    background: var(--dot); box-shadow: 0 0 8px var(--dot);
+  }
+</style>

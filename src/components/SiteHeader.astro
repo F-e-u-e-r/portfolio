@@ -1,0 +1,89 @@
+---
+import { identity, nav, contact } from '../data/site';
+interface Props { active?: string; }
+const { active } = Astro.props;
+---
+<header class="site-header">
+  <div class="container site-header__in">
+    <a class="brand" href="/">
+      <span class="brand__mark mono">&gt;_</span>
+      <span class="brand__name">{identity.name}<span class="brand__role"> · Applied AI</span></span>
+    </a>
+
+    <nav class="nav" aria-label="Primary">
+      {nav.map((item) => (
+        <a class:list={['nav__link', { 'is-active': active === item.href }]} href={item.href}>
+          {item.label}{('soon' in item && item.soon) && <span class="nav__soon">Soon</span>}
+        </a>
+      ))}
+    </nav>
+
+    <div class="site-header__actions">
+      <a class="btn btn--ghost" href={contact.github} target="_blank" rel="noopener">GitHub</a>
+    </div>
+
+    <details class="menu">
+      <summary aria-label="Open menu"><span class="menu__bars"></span></summary>
+      <div class="menu__panel">
+        {nav.map((item) => (
+          <a href={item.href}>{item.label}{('soon' in item && item.soon) && <span class="nav__soon">Soon</span>}</a>
+        ))}
+        <a href={contact.github} target="_blank" rel="noopener">GitHub ↗</a>
+      </div>
+    </details>
+  </div>
+</header>
+<style>
+  .site-header {
+    position: sticky; top: 0; z-index: var(--z-header);
+    background: color-mix(in srgb, var(--c-bg) 82%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--c-border);
+  }
+  .site-header__in {
+    display: flex; align-items: center; gap: 1.5rem;
+    height: 64px;
+  }
+  .brand { display: inline-flex; align-items: center; gap: 0.6rem; font-weight: var(--weight-semibold); }
+  .brand:hover { color: var(--c-fg); }
+  .brand__mark {
+    color: var(--c-accent); font-weight: 700;
+    border: 1px solid var(--c-border-strong); border-radius: 6px;
+    padding: 0.05rem 0.35rem; font-size: var(--text-sm);
+  }
+  .brand__role { color: var(--c-fg-subtle); font-weight: var(--weight-normal); }
+  .nav { display: flex; gap: 1.15rem; margin-inline-start: auto; flex-wrap: wrap; }
+  .nav__link { font-size: var(--text-sm); color: var(--c-fg-muted); display: inline-flex; align-items: center; gap: 0.35rem; }
+  .nav__link:hover, .nav__link.is-active { color: var(--c-fg); }
+  .nav__link.is-active { color: var(--c-accent); }
+  .nav__soon {
+    font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--c-accent-contrast);
+    background: var(--c-accent-dim); border-radius: var(--radius-pill);
+    padding: 0.05rem 0.4rem;
+  }
+  .site-header__actions { display: flex; }
+
+  /* Mobile disclosure menu */
+  .menu { display: none; margin-inline-start: auto; position: relative; }
+  .menu summary { list-style: none; cursor: pointer; width: 40px; height: 40px; display: grid; place-items: center; }
+  .menu summary::-webkit-details-marker { display: none; }
+  .menu__bars, .menu__bars::before, .menu__bars::after {
+    content: ''; display: block; width: 20px; height: 2px; background: var(--c-fg); border-radius: 2px; position: relative;
+  }
+  .menu__bars::before { position: absolute; top: -6px; }
+  .menu__bars::after { position: absolute; top: 6px; }
+  .menu__panel {
+    position: absolute; right: 0; top: 48px; min-width: 200px;
+    display: flex; flex-direction: column; gap: 0.25rem;
+    background: var(--c-surface); border: 1px solid var(--c-border);
+    border-radius: var(--radius-md); padding: 0.6rem; box-shadow: var(--shadow-2);
+  }
+  .menu__panel a { padding: 0.5rem 0.6rem; border-radius: 6px; font-size: var(--text-sm); color: var(--c-fg-muted); display: flex; align-items: center; gap: 0.4rem; }
+  .menu__panel a:hover { background: var(--c-surface-2); color: var(--c-fg); }
+
+  @media (max-width: 900px) {
+    .nav, .site-header__actions { display: none; }
+    .menu { display: block; }
+  }
+</style>

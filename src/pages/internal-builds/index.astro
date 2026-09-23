@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Internal Builds" active="/internal-builds/" boot={false}>
+  <section class="section container container--narrow">
+    <header class="page-head">
+      <p class="eyebrow">Internal Builds</p>
+      <h1>Private work, generalised.</h1>
+      <p class="lead">Some of the most valuable work lives in private repositories. Selected internal tools appear here as static case pages — the problem, the workflow, the approach, adoption and outcome, with the sensitive parts removed.</p>
+    </header>
+
+    <div class="card panel">
+      <h2>What a static internal case shows</h2>
+      <ul class="what">
+        <li>The business problem and general workflow</li>
+        <li>The solution approach and how it was adopted</li>
+        <li>Generalised scope and non-sensitive outcome</li>
+        <li>What was learned</li>
+      </ul>
+      <p class="disclaimer subtle">Implementation details have been generalised to protect confidential information.</p>
+    </div>
+
+    <p class="muted foot">No source code, client names, internal URLs, confidential screenshots or sensitive financial information are published here.</p>
+  </section>
+</BaseLayout>
+<style>
+  .page-head { margin-bottom: 2rem; }
+  .page-head h1 { font-size: var(--text-3xl); margin: 0.5rem 0 0.75rem; }
+  .panel { padding: 1.75rem; }
+  .panel h2 { font-size: var(--text-lg); margin-bottom: 1rem; }
+  .what { padding-left: 1.1rem; display: flex; flex-direction: column; gap: 0.5rem; color: var(--c-fg-muted); }
+  .disclaimer { margin-top: 1.25rem; font-style: italic; font-size: var(--text-sm); border-top: 1px solid var(--c-border); padding-top: 1rem; }
+  .foot { margin-top: 1.5rem; font-size: var(--text-sm); }
+</style>

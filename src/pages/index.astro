@@ -1,0 +1,258 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CaseCard from '../components/CaseCard.astro';
+import StatusBadge from '../components/StatusBadge.astro';
+import { identity, capabilities, principles, contact } from '../data/site';
+import { spine, buildStream } from '../data/journey';
+
+const allCases = await getCollection('cases');
+const featured = allCases.filter((c) => c.data.featured).sort((a, b) => a.data.order - b.data.order);
+const lab = (await getCollection('lab')).sort((a, b) => a.data.order - b.data.order);
+
+// Capability → Evidence (§4): each claim mapped to the projects that evidence it.
+const capEvidence = capabilities.map((cap) => ({
+  ...cap,
+  cases: allCases
+    .filter((c) => c.data.capabilities.includes(cap.key))
+    .sort((a, b) => a.data.order - b.data.order),
+}));
+---
+<BaseLayout active="/" boot={true}>
+  <!-- Hero (§4) -->
+  <section class="hero container">
+    <p class="eyebrow">Eric So · {identity.role}</p>
+    <h1 class="hero__h">Business transformation, extended deliberately into <span class="accent">applied AI</span>.</h1>
+    <p class="hero__lead lead">{identity.positioning}</p>
+    <div class="hero__actions">
+      <a class="btn btn--primary" href="/case-studies/">Explore case studies</a>
+      <a class="btn btn--ghost" href="/journey/">See the journey</a>
+    </div>
+    <p class="hero__alias subtle mono">{identity.githubAliasNote}</p>
+  </section>
+
+  <!-- Capability strip (§4) -->
+  <section class="section--tight container">
+    <div class="cap-strip">
+      {capabilities.map((c) => (
+        <div class="cap">
+          <p class="cap__label">{c.label}</p>
+          <p class="cap__blurb muted">{c.blurb}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Featured case studies (§6) -->
+  <section class="section container">
+    <header class="sec-head">
+      <p class="eyebrow">Featured</p>
+      <h2 class="sec-title">Case studies</h2>
+      <p class="muted">Evidence first — AI and business transformation together.</p>
+    </header>
+    <div class="case-grid">
+      {featured.map((c, i) => <CaseCard entry={c} featured={i < 2} />)}
+    </div>
+  </section>
+
+  <!-- Journey: spine + build stream teaser (§9, §10, §13) -->
+  <section class="section container">
+    <header class="sec-head">
+      <p class="eyebrow">Journey</p>
+      <h2 class="sec-title">Foundation, then applied AI</h2>
+      <p class="muted">The automation and transformation foundation did not start in 2026.</p>
+    </header>
+    <div class="journey">
+      <ol class="spine">
+        {spine.map((s) => (
+          <li class="spine__node">
+            <span class="spine__year mono">{s.year}</span>
+            <span class="spine__items">{s.items.join(' · ') || '—'}</span>
+          </li>
+        ))}
+      </ol>
+      <div class="stream">
+        <p class="eyebrow">Applied AI Build Stream</p>
+        <ul class="stream__rows">
+          {buildStream.slice(0, 5).map((row) => (
+            <li class="stream__row">
+              <div class="stream__meta">
+                <span class="stream__name">{row.name}</span>
+                <span class="subtle mono">{row.capability}</span>
+              </div>
+              <div class="stream__track" aria-hidden="true">
+                {row.milestones.slice(0, 6).map((m, idx, arr) => (
+                  <span class:list={['dot', { 'dot--last': idx === arr.length - 1 }]} title={m.title}></span>
+                ))}
+              </div>
+              <StatusBadge status={row.status} />
+            </li>
+          ))}
+        </ul>
+        <a class="link-more" href="/journey/">Full build stream →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Capability → Evidence (§4) -->
+  <section class="section container">
+    <header class="sec-head">
+      <p class="eyebrow">Capability → Evidence</p>
+      <h2 class="sec-title">Claims, mapped to projects</h2>
+    </header>
+    <div class="cap-evidence">
+      {capEvidence.map((c) => (
+        <div class="ce card">
+          <p class="ce__label">{c.label}</p>
+          <ul class="ce__cases">
+            {c.cases.map((cc) => (
+              <li><a href={`/case-studies/${cc.id}/`}>{cc.data.title}</a></li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Working principles (§30) -->
+  <section class="section container">
+    <header class="sec-head">
+      <p class="eyebrow">Working principles</p>
+      <h2 class="sec-title">How I make technology decisions</h2>
+    </header>
+    <ol class="principles">
+      {principles.map((p, i) => (
+        <li class="principle">
+          <span class="principle__n mono">{String(i + 1).padStart(2, '0')}</span>
+          <span>{p}</span>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <!-- Lab / Writing teaser (§4, §27, §28) -->
+  <section class="section container">
+    <div class="teaser-grid">
+      <div class="teaser card">
+        <p class="eyebrow">Lab</p>
+        <h3>Technical evidence layer</h3>
+        <ul class="teaser__list">
+          {lab.slice(0, 5).map((l) => (
+            <li><a href="/lab/">{l.data.title}</a> <span class="subtle mono">{l.data.status}</span></li>
+          ))}
+        </ul>
+        <a class="link-more" href="/lab/">Open the Lab →</a>
+      </div>
+      <div class="teaser card">
+        <p class="eyebrow">Writing <span class="soon-tag">To be launched</span></p>
+        <h3>Practical notes on applied AI</h3>
+        <p class="muted">AI fundamentals, RAG, evaluation, automation, agentic AI, governance and adoption — for people who want to understand not only how the technology works, but when it is worth using.</p>
+        <a class="link-more" href="/writing/">Planned themes →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- About teaser (§4, §31) -->
+  <section class="section container">
+    <div class="about-teaser card">
+      <p class="eyebrow">About</p>
+      <p class="about-teaser__text">{identity.thesis}</p>
+      <a class="btn btn--ghost" href="/about/">More about me</a>
+    </div>
+  </section>
+
+  <!-- Contact / CTA (§4, §33) -->
+  <section class="section--tight container">
+    <div class="home-cta">
+      <h2>Explore the case studies, or get in touch.</h2>
+      <div class="hero__actions">
+        <a class="btn btn--primary" href="/case-studies/">Explore case studies</a>
+        <a class="btn btn--ghost" href={`mailto:${contact.email}`}>Email {contact.email}</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .accent { color: var(--c-accent); }
+
+  /* Hero */
+  .hero { padding-block: clamp(3.5rem, 12vh, 7rem) clamp(2rem, 6vh, 3.5rem); max-width: 60rem; }
+  .hero__h { font-size: var(--text-4xl); margin-top: 0.8rem; }
+  .hero__lead { margin-top: 1.25rem; max-width: 44rem; }
+  .hero__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.75rem; }
+  .hero__alias { margin-top: 1.5rem; font-size: var(--text-xs); }
+
+  /* Section headers */
+  .sec-head { margin-bottom: 1.75rem; }
+  .sec-title { font-size: var(--text-3xl); margin-top: 0.35rem; }
+  .sec-head .muted { margin-top: 0.4rem; }
+
+  /* Capability strip */
+  .cap-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--c-border); border: 1px solid var(--c-border); border-radius: var(--radius-lg); overflow: hidden; }
+  .cap { background: var(--c-bg); padding: 1.4rem; }
+  .cap__label { font-weight: var(--weight-semibold); font-size: var(--text-sm); }
+  .cap__blurb { font-size: var(--text-sm); margin-top: 0.5rem; }
+
+  /* Case grid */
+  .case-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+
+  /* Journey */
+  .journey { display: grid; grid-template-columns: minmax(180px, 260px) 1fr; gap: 2.5rem; }
+  .spine { list-style: none; padding: 0; position: relative; }
+  .spine::before { content: ''; position: absolute; left: 5px; top: 6px; bottom: 6px; width: 1px; background: var(--c-border-strong); }
+  .spine__node { position: relative; padding: 0 0 1.1rem 1.5rem; }
+  .spine__node::before { content: ''; position: absolute; left: 0; top: 6px; width: 11px; height: 11px; border-radius: 50%; background: var(--c-bg); border: 2px solid var(--c-accent-dim); }
+  .spine__node:last-child::before { border-color: var(--c-accent); box-shadow: 0 0 10px var(--c-glow); }
+  .spine__year { display: block; color: var(--c-accent); font-size: var(--text-sm); }
+  .spine__items { color: var(--c-fg-muted); font-size: var(--text-sm); }
+
+  .stream__rows { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.9rem; margin-top: 1rem; }
+  .stream__row { display: grid; grid-template-columns: minmax(140px, 1fr) 2fr auto; align-items: center; gap: 1rem; padding-bottom: 0.9rem; border-bottom: 1px solid var(--c-border); }
+  .stream__meta { display: flex; flex-direction: column; gap: 0.15rem; }
+  .stream__name { font-weight: var(--weight-medium); font-size: var(--text-sm); }
+  .stream__meta .mono { font-size: var(--text-xs); }
+  .stream__track { display: flex; align-items: center; gap: 0.5rem; }
+  .stream__track .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--c-accent-dim); position: relative; }
+  .stream__track .dot:not(:last-child)::after { content: ''; position: absolute; left: 9px; top: 50%; width: 0.5rem; height: 1px; background: var(--c-border-strong); }
+  .stream__track .dot--last { background: var(--c-accent); box-shadow: 0 0 8px var(--c-glow); }
+
+  .link-more { display: inline-block; margin-top: 1rem; color: var(--c-accent); font-size: var(--text-sm); font-weight: var(--weight-medium); }
+
+  /* Capability → Evidence */
+  .cap-evidence { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+  .ce { padding: 1.25rem; }
+  .ce__label { font-weight: var(--weight-semibold); font-size: var(--text-sm); margin-bottom: 0.75rem; }
+  .ce__cases { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.4rem; }
+  .ce__cases a { color: var(--c-fg-muted); font-size: var(--text-sm); }
+  .ce__cases a:hover { color: var(--c-accent); }
+
+  /* Principles */
+  .principles { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem 2.5rem; counter-reset: p; }
+  .principle { display: flex; gap: 1rem; align-items: baseline; font-size: var(--text-lg); border-top: 1px solid var(--c-border); padding-top: 1rem; }
+  .principle__n { color: var(--c-accent); font-size: var(--text-sm); }
+
+  /* Teasers */
+  .teaser-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .teaser { padding: 1.75rem; }
+  .teaser h3 { font-size: var(--text-xl); margin-top: 0.35rem; }
+  .teaser__list { list-style: none; padding: 0; margin-top: 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
+  .teaser__list li { display: flex; justify-content: space-between; gap: 1rem; font-size: var(--text-sm); border-bottom: 1px solid var(--c-border); padding-bottom: 0.5rem; }
+  .teaser p.muted { margin-top: 0.85rem; font-size: var(--text-sm); }
+  .soon-tag { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-accent-contrast); background: var(--c-accent-dim); border-radius: var(--radius-pill); padding: 0.1rem 0.45rem; margin-left: 0.4rem; vertical-align: middle; }
+
+  /* About teaser + CTA */
+  .about-teaser { padding: 2.25rem; text-align: center; }
+  .about-teaser__text { font-size: var(--text-xl); max-width: 48rem; margin: 0.75rem auto 1.5rem; text-wrap: balance; }
+  .home-cta { text-align: center; padding: 2rem 0; }
+  .home-cta h2 { font-size: var(--text-2xl); }
+  .home-cta .hero__actions { justify-content: center; }
+
+  @media (max-width: 900px) {
+    .cap-strip, .cap-evidence { grid-template-columns: repeat(2, 1fr); }
+    .case-grid, .teaser-grid, .principles { grid-template-columns: 1fr; }
+    .journey { grid-template-columns: 1fr; gap: 1.75rem; }
+    .stream__row { grid-template-columns: 1fr auto; }
+    .stream__track { display: none; }
+  }
+</style>

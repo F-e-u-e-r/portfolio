@@ -1,0 +1,48 @@
+---
+import StatusBadge from './StatusBadge.astro';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props { entry: CollectionEntry<'cases'>; featured?: boolean; }
+const { entry, featured = false } = Astro.props;
+const d = entry.data;
+const capLabels: Record<string, string> = {
+  transformation: 'Transformation', 'applied-ai': 'Applied AI',
+  delivery: 'Delivery', governance: 'Governance',
+};
+---
+<a class:list={['case', 'card', { 'case--featured': featured }]} href={`/case-studies/${entry.id}/`}>
+  <div class="case__top">
+    <StatusBadge status={d.status} />
+    <span class="case__cat mono">{d.category}</span>
+  </div>
+  <h3 class="case__title">{d.title}</h3>
+  {d.subtitle && <p class="case__sub muted">{d.subtitle}</p>}
+  <p class="case__summary">{d.summary}</p>
+  <div class="case__caps">
+    {d.capabilities.map((c) => <span class="pill">{capLabels[c] ?? c}</span>)}
+  </div>
+  {d.evidence.length > 0 && (
+    <p class="case__evidence subtle mono">{d.evidence.map((e) => e.label).join(' · ')}</p>
+  )}
+  <span class="case__go">Read case study →</span>
+</a>
+<style>
+  .case {
+    display: flex; flex-direction: column; gap: 0.75rem;
+    padding: 1.4rem; height: 100%;
+  }
+  .case:hover { border-color: var(--c-border-strong); transform: translateY(-2px); }
+  .case--featured { padding: 1.75rem; }
+  .case__top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .case__cat { font-size: var(--text-xs); color: var(--c-fg-subtle); text-align: right; }
+  .case__title { font-size: var(--text-xl); }
+  .case--featured .case__title { font-size: var(--text-2xl); }
+  .case__sub { font-size: var(--text-sm); margin-top: -0.35rem; }
+  .case__summary { color: var(--c-fg-muted); font-size: var(--text-sm); flex: 1; }
+  .case__caps { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .case__evidence { font-size: var(--text-xs); }
+  .case__go {
+    color: var(--c-accent); font-size: var(--text-sm); font-weight: var(--weight-medium);
+    margin-top: 0.25rem;
+  }
+</style>

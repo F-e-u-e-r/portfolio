@@ -1,0 +1,93 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import StatusBadge from '../../components/StatusBadge.astro';
+
+export async function getStaticPaths() {
+  const cases = await getCollection('cases');
+  return cases.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+const { entry } = Astro.props;
+const d = entry.data;
+const { Content } = await render(entry);
+const capLabels: Record<string, string> = {
+  transformation: 'Transformation', 'applied-ai': 'Applied AI', delivery: 'Delivery', governance: 'Governance',
+};
+---
+<BaseLayout title={d.title} description={d.summary} active="/case-studies/" boot={false}>
+  <article class="section container container--narrow">
+    <a class="back" href="/case-studies/">← All case studies</a>
+    <div class="case-top">
+      <StatusBadge status={d.status} />
+      <span class="mono subtle">{d.category}</span>
+    </div>
+    <h1 class="case-h">{d.title}</h1>
+    {d.subtitle && <p class="lead">{d.subtitle}</p>}
+
+    <dl class="tldr card">
+      {d.problem && <div><dt>Problem</dt><dd>{d.problem}</dd></div>}
+      {d.role && <div><dt>My role</dt><dd>{d.role}</dd></div>}
+      {d.approach && <div><dt>Approach</dt><dd>{d.approach}</dd></div>}
+      {d.outcome && <div><dt>Outcome / status</dt><dd>{d.outcome}</dd></div>}
+    </dl>
+
+    <div class="caps">
+      {d.capabilities.map((c) => <span class="pill">{capLabels[c] ?? c}</span>)}
+    </div>
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    {d.milestones.length > 0 && (
+      <section class="block">
+        <h2>Milestones</h2>
+        <ol class="ms">
+          {d.milestones.map((m) => (
+            <li>
+              <strong>{m.title}</strong>{m.detail && <span class="muted"> — {m.detail}</span>}
+              {m.why && <p class="subtle why">Why it mattered: {m.why}</p>}
+            </li>
+          ))}
+        </ol>
+      </section>
+    )}
+
+    <section class="block">
+      <h2>Evidence</h2>
+      <div class="evidence__row">
+        {d.github && <a class="btn btn--ghost" href={d.github} target="_blank" rel="noopener">GitHub ↗</a>}
+        {d.demo && <a class="btn btn--ghost" href={d.demo} target="_blank" rel="noopener">Live demo ↗</a>}
+      </div>
+      <ul class="evidence__list">
+        {d.evidence.map((e) => (
+          <li>
+            <span class="mono subtle etype">{e.type}</span>
+            {e.url ? <a href={e.url} target="_blank" rel="noopener">{e.label} ↗</a> : <span>{e.label}</span>}
+          </li>
+        ))}
+      </ul>
+    </section>
+  </article>
+</BaseLayout>
+<style>
+  .back { color: var(--c-fg-muted); font-size: var(--text-sm); }
+  .case-top { display: flex; gap: 1rem; align-items: center; margin-top: 1.5rem; }
+  .case-h { font-size: var(--text-3xl); margin-top: 0.5rem; }
+  .tldr { padding: 1.5rem; margin-top: 1.75rem; display: grid; gap: 1rem; }
+  .tldr div { display: grid; grid-template-columns: minmax(120px, 160px) 1fr; gap: 1rem; }
+  .tldr dt { font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: var(--tracking-wide); color: var(--c-accent); }
+  .tldr dd { color: var(--c-fg); font-size: var(--text-sm); }
+  .caps { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1.5rem; }
+  .prose { margin-top: 2rem; color: var(--c-fg-muted); line-height: var(--leading-normal); }
+  .prose :global(blockquote) { border-left: 2px solid var(--c-accent-dim); padding-left: 1rem; color: var(--c-fg-muted); }
+  .block { margin-top: 2.5rem; border-top: 1px solid var(--c-border); padding-top: 1.5rem; }
+  .block h2 { font-size: var(--text-xl); margin-bottom: 1rem; }
+  .ms { padding-left: 1.1rem; display: flex; flex-direction: column; gap: 0.75rem; }
+  .ms .why { margin-top: 0.25rem; font-size: var(--text-sm); }
+  .evidence__row { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1rem; }
+  .evidence__list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+  .evidence__list li { display: flex; gap: 0.75rem; align-items: baseline; font-size: var(--text-sm); }
+  .etype { min-width: 7rem; }
+  @media (max-width: 640px) { .tldr div { grid-template-columns: 1fr; gap: 0.25rem; } }
+</style>

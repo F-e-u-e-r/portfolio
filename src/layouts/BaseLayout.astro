@@ -1,0 +1,54 @@
+---
+import '../styles/global.css';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import PetCompanion from '../components/PetCompanion.astro';
+import MatrixBoot from '../components/MatrixBoot.astro';
+import { identity } from '../data/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  active?: string;
+  boot?: boolean;
+  chromeless?: boolean;
+}
+const {
+  title,
+  description = identity.positioning,
+  active,
+  boot = true,
+  chromeless = false,
+} = Astro.props;
+
+const fullTitle = title ? `${title} · ${identity.name}` : `${identity.name} — ${identity.role}`;
+const siteOrigin = Astro.site ?? new URL('https://ccso.shsl.world');
+const canonical = new URL(Astro.url.pathname, siteOrigin).href;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#080b0a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    {boot && <MatrixBoot />}
+    {!chromeless && <SiteHeader active={active} />}
+    <main id="main">
+      <slot />
+    </main>
+    {!chromeless && <SiteFooter />}
+    {!chromeless && <PetCompanion />}
+  </body>
+</html>

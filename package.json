@@ -1,0 +1,22 @@
+{
+  "name": "ccso-portfolio",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Eric So — Business Transformation & Applied AI. Portfolio site (ccso.shsl.world).",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "astro": "^7.3.4"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "typescript": "^6.0.3"
+  }
+}

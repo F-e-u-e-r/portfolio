@@ -1,0 +1,27 @@
+# build output
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# env / secrets
+.env
+.env.*
+!.env.example
+
+# cloudflare / wrangler
+.wrangler/
+.dev.vars
+
+# os / editor
+.DS_Store
+*.log
+npm-debug.log*
+.vscode/*
+!.vscode/extensions.json
+
+# local tooling / scratch (not part of the site)
+.claude/
+.playwright-mcp/
+home-full.png

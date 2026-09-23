@@ -1,0 +1,46 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import StatusBadge from '../../components/StatusBadge.astro';
+const lab = (await getCollection('lab')).sort((a, b) => a.data.order - b.data.order);
+---
+<BaseLayout title="Lab" active="/lab/" boot={false}>
+  <section class="section container">
+    <header class="page-head">
+      <p class="eyebrow">Lab</p>
+      <h1>Technical evidence layer.</h1>
+      <p class="lead">Not a case-study graveyard — builds and experiments that back the capability claims.</p>
+    </header>
+    <ul class="lab-grid">
+      {lab.map((l) => (
+        <li class="lab-item card">
+          <div class="lab-item__top">
+            <h3>{l.data.title}</h3>
+            <StatusBadge status={l.data.status} />
+          </div>
+          <p class="muted">{l.data.summary}</p>
+          <div class="lab-item__tags">
+            {l.data.tags.map((t) => <span class="pill">{t}</span>)}
+          </div>
+          <div class="lab-item__links">
+            {l.data.github && <a href={l.data.github} target="_blank" rel="noopener">GitHub ↗</a>}
+            {l.data.demo && <a href={l.data.demo} target="_blank" rel="noopener">Demo ↗</a>}
+          </div>
+        </li>
+      ))}
+    </ul>
+  </section>
+</BaseLayout>
+<style>
+  .page-head { max-width: 46rem; margin-bottom: 2.5rem; }
+  .page-head h1 { font-size: var(--text-3xl); margin: 0.5rem 0 0.75rem; }
+  .lab-grid { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+  .lab-item { padding: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; }
+  .lab-item__top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .lab-item__top h3 { font-size: var(--text-lg); }
+  .lab-item .muted { font-size: var(--text-sm); flex: 1; }
+  .lab-item__tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .lab-item__links { display: flex; gap: 1rem; font-size: var(--text-sm); }
+  .lab-item__links a { color: var(--c-accent); }
+  @media (max-width: 900px) { .lab-grid { grid-template-columns: 1fr; } }
+</style>
