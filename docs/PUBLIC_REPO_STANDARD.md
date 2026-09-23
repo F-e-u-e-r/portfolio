@@ -108,19 +108,21 @@ Migration:  planned with the beta / notarisation release work — one coordinate
             CFBundleShortVersionString carries the pre-release suffix.
 ```
 
-- `skills` (Opus Pack): the version of record is `.claude-plugin/plugin.json` (`0.1.16`), cross-checked against `marketplace.json` and the README badge by `.github/checks.py`; git tags were decoupled from it by design (last tag `alpha-0.1.2`). Canonical release: **`v0.1.16` with the pre-release flag** (decision D3 — no `-alpha.1`, which would mint a second version). From then on every `plugin.json` bump gets a matching `vX.Y.Z` tag and Release; the README badge becomes `v0.1.16`, with `checks.py` updated in the same PR.
+- `skills` (Opus Pack): the version of record is `.claude-plugin/plugin.json`, cross-checked against `marketplace.json` and the README badge by `.github/checks.py`; legacy git tags (`alpha-0.1.x`) were decoupled from it and stop at `alpha-0.1.2`. Convention: every `plugin.json` bump gets a matching `vX.Y.Z` tag and GitHub Release, pre-release while the pack is alpha; the README badge reads `vX.Y.Z` and `checks.py` validates that form. The first canonical tag under this convention is `v0.1.16` (decision D3 — not `v0.1.16-alpha.1`, which would mint a second version).
 
-| Repo | Tags today | Next canonical release |
+Per-repository conventions (policy only — *release state*, i.e. what has been cut and what is owed, is tracked in [issue #1](https://github.com/F-e-u-e-r/portfolio/issues/1) and `ROADMAP.md`, not here):
+
+| Repo | Tag scheme | Convention |
 | --- | --- | --- |
-| portfolio | none | `v1.0.0` at launch |
-| starledger | `v1.3.0-alpha.1` … (conforming) | Release for `v1.3.0-alpha.1`; correct the erroneous `v1.2.0-alpha.1` title (it says "template") |
-| starledger-template | `v1.2.0-alpha.1`, `v1.1.0-alpha.5` | Release for `v1.2.0-alpha.1` |
-| ai-pet-usage | `alpha-v0.2.0` … | exception — stays `alpha-v*` until the governed migration |
-| homebrew-tap | none | none — follows the app |
-| skills (Opus Pack) | `alpha-0.1.2` (decoupled) | `v0.1.16` (pre-release) |
-| tailscale-ai-egress | `v1.4.0` … (conforming) | none needed |
-| religion-council | `v0.13.1` … (conforming; stray `v0.1` stays) | next `v0.14.0`, titled "Worldview Council …" |
-| ai-arena | none | `v0.1.0` after LICENSE + CONTRIBUTING |
+| portfolio | none yet | first tag `v1.0.0` at launch |
+| starledger | `vX.Y.Z-alpha.N` / `-rc.N` (conforming) | every new tag gets a Release, pre-release while alpha; historical titles are clarified, never rewritten |
+| starledger-template | `vX.Y.Z-alpha.N` (conforming) | same; follows the parent's version line |
+| ai-pet-usage | `alpha-vX.Y.Z` | governed exception (above) until the coordinated migration |
+| homebrew-tap | none | no tags — follows the app |
+| skills (Opus Pack) | `vX.Y.Z` from `v0.1.16` (legacy `alpha-0.1.x` before) | one tag + Release per `plugin.json` bump; pre-release while alpha |
+| tailscale-ai-egress | `vX.Y.Z` (conforming) | as is |
+| religion-council | `vX.Y.Z` (conforming; the stray `v0.1` stays) | no release solely for metadata; the next genuine release is titled "Worldview Council …" |
+| ai-arena | none yet | first tag `v0.1.0` after LICENSE + CONTRIBUTING (§9) |
 
 ## 6. Status
 
