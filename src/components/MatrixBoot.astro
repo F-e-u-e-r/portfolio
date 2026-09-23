@@ -59,6 +59,10 @@
     } else {
       const pctEl = document.getElementById('boot-pct');
       html.setAttribute('data-booting', '');
+      // Make the rest of the page inert while the overlay is up, so keyboard/AT
+      // focus cannot leak behind it during the first-visit boot.
+      const bg = Array.from(document.body.children).filter((el) => el !== boot);
+      bg.forEach((el) => el.setAttribute('inert', ''));
       const finish = () => {
         boot.classList.add('is-done');
         const done = () => boot.remove();
@@ -66,6 +70,7 @@
         setTimeout(done, 600);
         markSeen();
         html.removeAttribute('data-booting');
+        bg.forEach((el) => el.removeAttribute('inert'));
       };
       const canvas = document.getElementById('matrix-boot-canvas') as HTMLCanvasElement | null;
       const ctx = canvas ? canvas.getContext('2d') : null;

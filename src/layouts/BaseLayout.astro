@@ -53,6 +53,7 @@ const ogImage = new URL('/og.png', siteOrigin).href;
       try {
         var rm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         if (rm || localStorage.getItem('boot-seen') === '1') document.documentElement.setAttribute('data-boot-skip', '');
+        else document.documentElement.setAttribute('data-booting', '');
       } catch (e) {}
     </script>
     <style is:inline>html[data-boot-skip] #matrix-boot { display: none !important; }</style>

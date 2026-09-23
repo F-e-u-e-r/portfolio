@@ -11,9 +11,9 @@ const { active } = Astro.props;
     </a>
 
     <nav class="nav" aria-label="Primary">
-      {nav.map((item) => (
+      {nav.filter((item) => 'primary' in item && item.primary).map((item) => (
         <a class:list={['nav__link', { 'is-active': active === item.href }]} href={item.href} aria-current={active === item.href ? 'page' : undefined}>
-          {item.label}{('soon' in item && item.soon) && <span class="nav__soon">Soon</span>}
+          {item.label}
         </a>
       ))}
     </nav>
@@ -83,8 +83,9 @@ const { active } = Astro.props;
   .menu__panel a:hover { background: var(--c-surface-2); color: var(--c-fg); }
   .menu__panel a.is-active { color: var(--c-accent); }
 
-  /* Swap to the disclosure menu before the 8-item nav wraps (~1000px). */
-  @media (max-width: 1024px) {
+  /* Desktop header shows the 5 primary sections; the full sitemap (incl. Soon
+     routes) is in the disclosure menu and the footer. Swap to the menu when narrow. */
+  @media (max-width: 860px) {
     .nav, .site-header__actions { display: none; }
     .menu { display: block; }
   }

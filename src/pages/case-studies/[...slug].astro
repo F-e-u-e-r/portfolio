@@ -13,6 +13,9 @@ const { Content } = await render(entry);
 const capLabels: Record<string, string> = {
   transformation: 'Transformation', 'applied-ai': 'Applied AI', delivery: 'Delivery', governance: 'Governance',
 };
+const hasButtons = Boolean(d.github || d.demo);
+const linkedEvidence = d.evidence.filter((e) => Boolean(e.url));
+const hasEvidence = hasButtons || linkedEvidence.length > 0;
 ---
 <BaseLayout title={d.title} description={d.summary} active="/case-studies/" boot={false}>
   <article class="section container container--narrow">
@@ -55,18 +58,23 @@ const capLabels: Record<string, string> = {
 
     <section class="block">
       <h2>Evidence</h2>
-      <div class="evidence__row">
-        {d.github && <a class="btn btn--ghost" href={d.github} target="_blank" rel="noopener">GitHub ↗</a>}
-        {d.demo && <a class="btn btn--ghost" href={d.demo} target="_blank" rel="noopener">Live demo ↗</a>}
-      </div>
-      <ul class="evidence__list">
-        {d.evidence.filter((e) => e.type !== 'github' && e.type !== 'live-demo').map((e) => (
-          <li>
-            <span class="mono subtle etype">{e.type}</span>
-            {e.url ? <a href={e.url} target="_blank" rel="noopener">{e.label} ↗</a> : <span>{e.label}</span>}
-          </li>
-        ))}
-      </ul>
+      {hasButtons && (
+        <div class="evidence__row">
+          {d.github && <a class="btn btn--ghost" href={d.github} target="_blank" rel="noopener">GitHub ↗</a>}
+          {d.demo && <a class="btn btn--ghost" href={d.demo} target="_blank" rel="noopener">Live demo ↗</a>}
+        </div>
+      )}
+      {linkedEvidence.length > 0 && (
+        <ul class="evidence__list">
+          {linkedEvidence.map((e) => (
+            <li>
+              <span class="mono subtle etype">{e.type}</span>
+              <a href={e.url} target="_blank" rel="noopener">{e.label} ↗</a>
+            </li>
+          ))}
+        </ul>
+      )}
+      {!hasEvidence && <p class="subtle">Evidence will be published as this case study is completed.</p>}
     </section>
   </article>
 </BaseLayout>
