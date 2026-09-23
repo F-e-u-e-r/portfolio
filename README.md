@@ -5,7 +5,7 @@
 **Eric So — Business Transformation &amp; Applied AI.**
 
 ![Astro](https://img.shields.io/badge/Astro-7-BC52EE?logo=astro&logoColor=white)
-![status](https://img.shields.io/badge/status-Phase%201%20foundation-7aa2ff)
+![status](https://img.shields.io/badge/status-BUILDING-9aa3ac)
 ![output](https://img.shields.io/badge/output-static-2ee6a6)
 ![hosting](https://img.shields.io/badge/hosting-Cloudflare%20Workers-F38020?logo=cloudflare&logoColor=white)
 
