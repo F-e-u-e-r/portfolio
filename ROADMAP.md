@@ -10,6 +10,7 @@ Scope is frozen at **v1.0** — rationale in [`docs/DECISIONS.md`](docs/DECISION
 
 ### 2026-09-24
 
+- **~02:40 — Step 3 COMPLETE** — `skills` badge/`checks.py` PR #247 merged by owner bypass (explicit exception recorded on the PR; required CI checks green on the PR and again on the merge commit `df1248e`); annotated tag `v0.1.16` on the merge commit; GitHub pre-release published with notes covering the evolution since `alpha-0.1.2` without inventing intermediate tags.
 - **~02:30 — Step 3 B/C done** — StarLedger `v1.3.0-alpha.1` pre-release cut (Discovery Inbox, P5) and the `v1.2.0-alpha.1` title clarified ("Reusable template (P4) alpha", body unchanged); StarLedger Template `v1.2.0-alpha.1` pre-release cut; `skills` badge/`checks.py` PR #247 opened (CI green; awaiting the ruleset's required review before tag `v0.1.16` + pre-release).
 - **~02:10 — `tradingview-mcp` made private** and removed from public-repository / portfolio scope: Lab entry deleted, standard's derivative tier removed as empty (forks are now Tier B), issue #1 items removed; the review record keeps its historical findings with a post-review note.
 - **~02:00 — Step 2 COMPLETE** — portfolio PR #6 (`6cee668`: README wording, ROADMAP state, Opus Pack journey chronology with evidence pointers, AI Pet Usage in Lab, `opus-pack` → `skills` rename record, deploy-readiness decisions) and the `tradingview-mcp` README truth-fix PR #28 (`41ff043`) merged.
@@ -54,7 +55,7 @@ Scope is frozen at **v1.0** — rationale in [`docs/DECISIONS.md`](docs/DECISION
 - 20 files, +94 / −31.
 
 **Public-repo metadata standard** → [PR #5](https://github.com/F-e-u-e-r/portfolio/pull/5) (merged 2026-09-24 01:09)
-- `docs/PUBLIC_REPO_STANDARD.md` v1 + review record (findings F1–F11, Opus Pack chronology, decisions D1–D10); issue #1 is the implementation checklist — step 2 complete, step 3 partial (see Next), steps 4–6 open.
+- `docs/PUBLIC_REPO_STANDARD.md` v1 + review record (findings F1–F11, Opus Pack chronology, decisions D1–D10); issue #1 is the implementation checklist — steps 2–3 complete, steps 4–6 open.
 
 ---
 
@@ -98,8 +99,9 @@ Grok 4.6 (high) ran twice via `xcheck --grok`, each on two packets (the prior GP
 ## Next
 
 - **Step 2 — COMPLETE.** `portfolio` PR #6 and the TradingView README truth-fix PR merged; `tradingview-mcp` made private and removed from public-repository / portfolio scope.
-- **Step 3 — PARTIAL:** B/C complete (StarLedger `v1.3.0-alpha.1` pre-release cut and the `v1.2.0-alpha.1` title clarified to "Reusable template (P4) alpha"; StarLedger Template `v1.2.0-alpha.1` pre-release cut); A (`skills` `v0.1.16`) awaiting merge/release — badge + `checks.py` PR #247 is open with CI green and the repository ruleset's required review outstanding; D/E require no current release action.
-- Then step 4 metadata batch → step 5 top folds / licensing state / provenance → step 6 extensions.
+- **Step 3 — COMPLETE.** A: `skills` `v0.1.16` pre-release (tag on merge commit `df1248e`); B/C: StarLedger `v1.3.0-alpha.1` pre-release + `v1.2.0-alpha.1` title clarified, StarLedger Template `v1.2.0-alpha.1` pre-release; D/E: no action by design (religion-council's next genuine release carries "Worldview Council"; ai-pet-usage stays on its governed exception — migration ticket when that work is scheduled).
+- **Step 4 — Metadata batch** (next): descriptions → topics → status badges per `docs/PUBLIC_REPO_STANDARD.md` §2 / §4 / §6 — current-vs-target dry run first, then `gh repo edit` (reversible), then the status badge in each top fold.
+- Then step 5 top folds / licensing state / provenance → step 6 extensions.
 - Re-run xcheck round 2 after the quota resets.
 - MVP content pass (Phase 2): real RAG + Sales-to-Ops case content, journey milestones, About, LinkedIn + resume, web fonts.
 - Deploy to Cloudflare (`wrangler login` → `wrangler deploy`) and wire `ccso.shsl.world` — deploy readiness per `docs/DECISIONS.md`: `robots.txt` + sitemap, `noindex` on maintenance/placeholder pages, AI-crawler policy.
