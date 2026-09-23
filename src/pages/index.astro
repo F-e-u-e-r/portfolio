@@ -85,6 +85,7 @@ const capEvidence = capabilities.map((cap) => ({
                   <span class:list={['dot', { 'dot--last': idx === arr.length - 1 }]} title={m.title}></span>
                 ))}
               </div>
+              <span class="sr-only">Milestones: {row.milestones.map((m) => m.title).join(', ')}</span>
               <StatusBadge status={row.status} />
             </li>
           ))}

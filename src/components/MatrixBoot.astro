@@ -61,15 +61,16 @@
       document.documentElement.removeAttribute('data-booting');
     };
 
-    document.documentElement.setAttribute('data-booting', '');
     const pctEl = document.getElementById('boot-pct');
 
     if (seen) {
-      finish();
+      boot.remove(); // repeat visit: remove instantly, no fade, no scroll lock
     } else if (reduce) {
+      document.documentElement.setAttribute('data-booting', '');
       if (pctEl) pctEl.textContent = '100%';
       setTimeout(finish, 260);
     } else {
+      document.documentElement.setAttribute('data-booting', '');
       const canvas = document.getElementById('matrix-boot-canvas') as HTMLCanvasElement | null;
       const ctx = canvas ? canvas.getContext('2d') : null;
       const start = performance.now();

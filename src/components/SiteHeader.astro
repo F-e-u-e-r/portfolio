@@ -12,7 +12,7 @@ const { active } = Astro.props;
 
     <nav class="nav" aria-label="Primary">
       {nav.map((item) => (
-        <a class:list={['nav__link', { 'is-active': active === item.href }]} href={item.href}>
+        <a class:list={['nav__link', { 'is-active': active === item.href }]} href={item.href} aria-current={active === item.href ? 'page' : undefined}>
           {item.label}{('soon' in item && item.soon) && <span class="nav__soon">Soon</span>}
         </a>
       ))}
@@ -26,7 +26,7 @@ const { active } = Astro.props;
       <summary aria-label="Open menu"><span class="menu__bars"></span></summary>
       <div class="menu__panel">
         {nav.map((item) => (
-          <a href={item.href}>{item.label}{('soon' in item && item.soon) && <span class="nav__soon">Soon</span>}</a>
+          <a class:list={[{ 'is-active': active === item.href }]} href={item.href} aria-current={active === item.href ? 'page' : undefined}>{item.label}{('soon' in item && item.soon) && <span class="nav__soon">Soon</span>}</a>
         ))}
         <a href={contact.github} target="_blank" rel="noopener">GitHub ↗</a>
       </div>
@@ -81,8 +81,10 @@ const { active } = Astro.props;
   }
   .menu__panel a { padding: 0.5rem 0.6rem; border-radius: 6px; font-size: var(--text-sm); color: var(--c-fg-muted); display: flex; align-items: center; gap: 0.4rem; }
   .menu__panel a:hover { background: var(--c-surface-2); color: var(--c-fg); }
+  .menu__panel a.is-active { color: var(--c-accent); }
 
-  @media (max-width: 900px) {
+  /* Swap to the disclosure menu before the 8-item nav wraps (~1000px). */
+  @media (max-width: 1024px) {
     .nav, .site-header__actions { display: none; }
     .menu { display: block; }
   }

@@ -2,8 +2,9 @@
 import StatusBadge from './StatusBadge.astro';
 import type { CollectionEntry } from 'astro:content';
 
-interface Props { entry: CollectionEntry<'cases'>; featured?: boolean; }
-const { entry, featured = false } = Astro.props;
+interface Props { entry: CollectionEntry<'cases'>; featured?: boolean; headingLevel?: 'h2' | 'h3'; }
+const { entry, featured = false, headingLevel = 'h3' } = Astro.props;
+const Heading = headingLevel;
 const d = entry.data;
 const capLabels: Record<string, string> = {
   transformation: 'Transformation', 'applied-ai': 'Applied AI',
@@ -15,7 +16,7 @@ const capLabels: Record<string, string> = {
     <StatusBadge status={d.status} />
     <span class="case__cat mono">{d.category}</span>
   </div>
-  <h3 class="case__title">{d.title}</h3>
+  <Heading class="case__title">{d.title}</Heading>
   {d.subtitle && <p class="case__sub muted">{d.subtitle}</p>}
   <p class="case__summary">{d.summary}</p>
   <div class="case__caps">
