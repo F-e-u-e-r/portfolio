@@ -8,14 +8,21 @@ Scope is frozen at **v1.0** — rationale in [`docs/DECISIONS.md`](docs/DECISION
 
 ## What we've done
 
+### 2026-09-24
+
+- **~01:20 — Issue #1 re-based** — body replaced by a six-step implementation checklist that references the standard by section; the original 2026-09-23 body is preserved in the review record's Appendix A.
+- **01:09 — PR #5 merged** (`cc9cb86`) — [`docs/PUBLIC_REPO_STANDARD.md`](docs/PUBLIC_REPO_STANDARD.md) v1 (tiers, description, top fold, topics, releases with the `ai-pet-usage` governed exception, five-state status, integrity, licensing state) + [`docs/reviews/2026-09-24-public-repo-metadata-review.md`](docs/reviews/2026-09-24-public-repo-metadata-review.md) + DECISIONS entries.
+- **~00:00–00:50 — Public-repo metadata review** — three independent Sonnet 5 read-only gates (metadata audit, integrity critic, release-tooling trace); every material finding reproduced first-hand and GitHub state verified unchanged afterwards. Found: issue #1 had drifted from the consolidated standard; the `ai-pet-usage` tag scheme is a runtime/distribution contract (updater, release workflow, Homebrew cask); the Opus Pack journey row was the review's illustrative example verbatim.
+
 ### 2026-09-23
 
+- **23:48 — PR #4 merged** (`096a4e9`) — Grok 4.6 fixes ×2 + ROADMAP/README; PR #2 closed as merged in the same merge (its branch was the base of `review/grok-4.6`).
 - **23:45 — Grok 4.6 round-2 fixes committed** (`e4de03a`) — header-wrap regression fixed (desktop header trimmed to the 5 primary sections; Soon routes in footer + mobile menu), evidence honesty (only reachable evidence shown; a placeholder note when none), footer Soon badges, boot a11y (page inert while the overlay is up), hero alias footnote dropped.
 - **~23:30 — Grok 4.6 round 2** (`xcheck --grok`) — validated round 1 and caught a regression (the longer brand re-opened the nav wrap) plus incomplete round-1 fixes.
 - **23:15 — Grok 4.6 round-1 fixes committed** (`8eee0d9`) — Topics marked Soon, boot FOUC fixed (localStorage skip before paint), Lab-teaser WCAG + StatusBadge, evidence de-duplication, brand positioning, mobile build-stream dots + pet/footer clearance.
 - **~22:50 — Grok 4.6 round 1** (`xcheck --grok`) — product / IA / content / design review; 7 findings (no high-severity).
 - **21:15 — Roadmap published.** This file added and merged to `main`.
-- **20:43 — PR #2 opened** — [Phase 1 cross-model review fixes](https://github.com/F-e-u-e-r/portfolio/pull/2) (`review/phase1-cross-model` → `main`, **open**).
+- **20:43 — PR #2 opened** — [Phase 1 cross-model review fixes](https://github.com/F-e-u-e-r/portfolio/pull/2) (`review/phase1-cross-model` → `main`); merged 23:48 together with PR #4.
 - **20:42 — Review record committed** (`fbaf940`) — `docs/reviews/2026-09-23-phase1-cross-model.md` (lands with PR #2).
 - **20:36 — Review fixes committed** (`a0934c3`) — 11 confirmed xcheck findings fixed; `astro build` (15 pages) + `astro check` (0 errors) green; header re-rendered at 960px; OG image 1200×630 generated.
 - **20:00–20:35 — xcheck (cross-model review)** of Phase 1 by `gpt-5.6-sol` + `gpt-5.6-luna` (max effort). Round 1 complete (11 findings, no high-severity); each reproduced before fixing. Round 2 re-review quota-blocked (see xcheck output).
@@ -38,9 +45,13 @@ Scope is frozen at **v1.0** — rationale in [`docs/DECISIONS.md`](docs/DECISION
 **Public-repo README review** → [Issue #1](https://github.com/F-e-u-e-r/portfolio/issues/1)
 - 9 non-fork public repos audited vs the `ai-pet-usage` gold standard: per-repo issues + paste-ready descriptions + cross-cutting fixes + a house README template.
 - P0: `tradingview-mcp` README identity bug (title + clone URLs point at the wrong repo `tradingview-mcp-review`; opening says 9 tools, ships 7); `opus-pack` version mismatch (README `alpha-0.1.16` vs latest tag `alpha-0.1.2`); `religion-council` 8 release titles still "Religion Council".
+- Superseded 2026-09-24: issue #1 re-based onto `docs/PUBLIC_REPO_STANDARD.md`. The `opus-pack` "version mismatch" is a by-design decoupling (version of record is `plugin.json` `0.1.16`) — the fix is a canonical `v0.1.16` release, not a badge edit; the `religion-council` titles stay (historical names).
 
-**Cross-model review fixes** → [PR #2](https://github.com/F-e-u-e-r/portfolio/pull/2) (open)
+**Cross-model review fixes** → [PR #2](https://github.com/F-e-u-e-r/portfolio/pull/2) (merged 2026-09-23 23:48 via PR #4)
 - 20 files, +94 / −31.
+
+**Public-repo metadata standard** → [PR #5](https://github.com/F-e-u-e-r/portfolio/pull/5) (merged 2026-09-24 01:09)
+- `docs/PUBLIC_REPO_STANDARD.md` v1 + review record (findings F1–F11, Opus Pack chronology, decisions D1–D10); issue #1 is now the implementation checklist (steps 2–6 open).
 
 ---
 
@@ -83,8 +94,7 @@ Grok 4.6 (high) ran twice via `xcheck --grok`, each on two packets (the prior GP
 
 ## Next
 
-- Merge PR #2 (review fixes) after review.
-- Work Issue #1 repo-by-repo (P0 first: `tradingview-mcp`).
+- Issue #1 steps 2–6 per `docs/PUBLIC_REPO_STANDARD.md` — step 2 (integrity fixes: README wording, ROADMAP, Opus Pack journey row, Lab entry for `ai-pet-usage`, `tradingview-mcp` README identity) in progress.
 - Re-run xcheck round 2 after the quota resets.
 - MVP content pass (Phase 2): real RAG + Sales-to-Ops case content, journey milestones, About, LinkedIn + resume, web fonts.
-- Deploy to Cloudflare (`wrangler login` → `wrangler deploy`) and wire `ccso.shsl.world`.
+- Deploy to Cloudflare (`wrangler login` → `wrangler deploy`) and wire `ccso.shsl.world` — deploy readiness per `docs/DECISIONS.md`: `robots.txt` + sitemap, `noindex` on maintenance/placeholder pages, AI-crawler policy.
