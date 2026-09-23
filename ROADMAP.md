@@ -10,6 +10,7 @@ Scope is frozen at **v1.0** — rationale in [`docs/DECISIONS.md`](docs/DECISION
 
 ### 2026-09-24
 
+- **~03:15 — Step 4a COMPLETE; 4b partial** — descriptions + topics applied on all 9 public repos via `gh repo edit` (sequential; before/after captured; API read-back: descriptions exact, topics set-equal; visibility/homepage/default branch/license untouched). Status-badge PRs opened on all 8 Tier-A repos: merged portfolio #11 (BUILDING) and starledger #286 (ACTIVE); blocked by review rulesets with CI green — ai-pet-usage #103, skills #248, tailscale-ai-egress #35, religion-council #63, ai-arena #27; starledger-template #1 blocked by a pre-existing `prettier --check` failure in two issue-template YAML files (the `CI` workflow has failed on `main` since 2026-06-24).
 - **~02:40 — Step 3 COMPLETE** — `skills` badge/`checks.py` PR #247 merged by owner bypass (explicit exception recorded on the PR; required CI checks green on the PR and again on the merge commit `df1248e`); annotated tag `v0.1.16` on the merge commit; GitHub pre-release published with notes covering the evolution since `alpha-0.1.2` without inventing intermediate tags.
 - **~02:30 — Step 3 B/C done** — StarLedger `v1.3.0-alpha.1` pre-release cut (Discovery Inbox, P5) and the `v1.2.0-alpha.1` title clarified ("Reusable template (P4) alpha", body unchanged); StarLedger Template `v1.2.0-alpha.1` pre-release cut; `skills` badge/`checks.py` PR #247 opened (CI green; awaiting the ruleset's required review before tag `v0.1.16` + pre-release).
 - **~02:10 — `tradingview-mcp` made private** and removed from public-repository / portfolio scope: Lab entry deleted, standard's derivative tier removed as empty (forks are now Tier B), issue #1 items removed; the review record keeps its historical findings with a post-review note.
@@ -100,7 +101,7 @@ Grok 4.6 (high) ran twice via `xcheck --grok`, each on two packets (the prior GP
 
 - **Step 2 — COMPLETE.** `portfolio` PR #6 and the TradingView README truth-fix PR merged; `tradingview-mcp` made private and removed from public-repository / portfolio scope.
 - **Step 3 — COMPLETE.** A: `skills` `v0.1.16` pre-release (tag on merge commit `df1248e`); B/C: StarLedger `v1.3.0-alpha.1` pre-release + `v1.2.0-alpha.1` title clarified, StarLedger Template `v1.2.0-alpha.1` pre-release; D/E: no action by design (religion-council's next genuine release carries "Worldview Council"; ai-pet-usage stays on its governed exception — migration ticket when that work is scheduled).
-- **Step 4 — Metadata batch** (next): descriptions → topics → status badges per `docs/PUBLIC_REPO_STANDARD.md` §2 / §4 / §6 — current-vs-target dry run first, then `gh repo edit` (reversible), then the status badge in each top fold.
+- **Step 4 — 4a COMPLETE, 4b PARTIAL** (2/8 badges merged): five badge PRs await a review-ruleset decision (reviewer approval, explicit owner-bypass exception, or ruleset adjustment); starledger-template awaits a fix for its pre-existing `prettier --check` failure before its PR can be CI-green.
 - Then step 5 top folds / licensing state / provenance → step 6 extensions.
 - Re-run xcheck round 2 after the quota resets.
 - MVP content pass (Phase 2): real RAG + Sales-to-Ops case content, journey milestones, About, LinkedIn + resume, web fonts.
