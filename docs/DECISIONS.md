@@ -2,6 +2,11 @@
 
 Concise decision log (newest first). Each entry: decision · rejected alternative · why.
 
+## 2026-09-24 — Public repository standard
+- **One metadata standard for the public repos: [`PUBLIC_REPO_STANDARD.md`](PUBLIC_REPO_STANDARD.md)** (tiers, description, top fold, topics, releases, status, integrity). Rejected: the `ai-pet-usage` README as a full gold-standard skeleton (issue #1's original approach). Why: it forced identical documentation, over-length descriptions and 13–16-topic lists, and would have introduced capability claims — see [`reviews/2026-09-24-public-repo-metadata-review.md`](reviews/2026-09-24-public-repo-metadata-review.md) (decisions D1–D10).
+- **Release naming has a governed exception, not a blanket rule.** `ai-pet-usage` keeps `alpha-vX.Y.Z` until its updater / release workflow / Homebrew cask are migrated together; `opus-pack`'s canonical release is `v0.1.16` (pre-release flag), matching its `plugin.json` version of record.
+- **Repository status badges use five states** (LIVE / ACTIVE / PROTOTYPE / BUILDING / ARCHIVED); the site's §38 enum keeps `IN_DEVELOPMENT` until §38 is revisited (maps to BUILDING for badges).
+
 ## 2026-09-23 — Phase 1 foundation
 - **Framework: Astro 7, static output.** Rejected: an SSR adapter. Why: the site is static-first (§34); the RAG live demo (Phase 4) is a separate Cloudflare Worker, not an Astro SSR route.
 - **Hosting: Cloudflare Workers Static Assets** (`wrangler.toml` → `dist/`). Deploy deferred — needs `wrangler login` (the user's Cloudflare auth).
