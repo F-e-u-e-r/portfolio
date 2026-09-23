@@ -28,7 +28,8 @@ from process design and prototyping to deployment, governance and adoption.
 > schema, the full route skeleton (§3 IA), and a working homepage: Matrix boot, capability
 > strip, featured cases, journey + Applied AI build stream, working principles, Lab/Writing
 > teasers, and contact. Case/Lab content is **placeholder** pending the MVP content pass.
-> Not yet deployed. Scope is frozen at v1.0 — see [`docs/DECISIONS.md`](docs/DECISIONS.md).
+> Not yet deployed. Cross-model reviewed (GPT-5.6 sol + luna; Grok 4.6 ×2 rounds) with fixes
+> applied — see [`ROADMAP.md`](ROADMAP.md). Scope is frozen at v1.0 — see [`docs/DECISIONS.md`](docs/DECISIONS.md).
 
 ## ✨ What's here
 
@@ -63,6 +64,7 @@ npm run check    # astro check (types + content schema)
 | [`src/styles/`](src/styles) | `tokens.css` (design tokens) + `global.css` (base). |
 | [`wrangler.toml`](wrangler.toml) | Cloudflare Workers Static Assets config (§34). |
 | [`docs/DECISIONS.md`](docs/DECISIONS.md) | Decision log. |
+| [`ROADMAP.md`](ROADMAP.md) | Progress log + output summary + cross-model (xcheck) results. |
 
 ## 🧭 Status system
 

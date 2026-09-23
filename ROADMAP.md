@@ -10,6 +10,10 @@ Scope is frozen at **v1.0** — rationale in [`docs/DECISIONS.md`](docs/DECISION
 
 ### 2026-09-23
 
+- **23:45 — Grok 4.6 round-2 fixes committed** (`e4de03a`) — header-wrap regression fixed (desktop header trimmed to the 5 primary sections; Soon routes in footer + mobile menu), evidence honesty (only reachable evidence shown; a placeholder note when none), footer Soon badges, boot a11y (page inert while the overlay is up), hero alias footnote dropped.
+- **~23:30 — Grok 4.6 round 2** (`xcheck --grok`) — validated round 1 and caught a regression (the longer brand re-opened the nav wrap) plus incomplete round-1 fixes.
+- **23:15 — Grok 4.6 round-1 fixes committed** (`8eee0d9`) — Topics marked Soon, boot FOUC fixed (localStorage skip before paint), Lab-teaser WCAG + StatusBadge, evidence de-duplication, brand positioning, mobile build-stream dots + pet/footer clearance.
+- **~22:50 — Grok 4.6 round 1** (`xcheck --grok`) — product / IA / content / design review; 7 findings (no high-severity).
 - **21:15 — Roadmap published.** This file added and merged to `main`.
 - **20:43 — PR #2 opened** — [Phase 1 cross-model review fixes](https://github.com/F-e-u-e-r/portfolio/pull/2) (`review/phase1-cross-model` → `main`, **open**).
 - **20:42 — Review record committed** (`fbaf940`) — `docs/reviews/2026-09-23-phase1-cross-model.md` (lands with PR #2).
@@ -64,6 +68,16 @@ Scope is frozen at **v1.0** — rationale in [`docs/DECISIONS.md`](docs/DECISION
 **Round 2 (re-review of the fix diff):** **quota-blocked** — the OpenAI/Codex account hit its usage limit mid-run (resets **2026-09-24 ~01:00 UTC+8**), so no PROCEED/FIX verdict was returned; **none is inferred**. Round-1 fixes stand on execution-based verification (build, check, contrast recomputation, 960px header render). Re-run available after the quota resets.
 
 > Reviewer-family note: `sol` and `luna` are two variants of one provider family (OpenAI GPT-5.6); both differ from the author family (Claude Opus 4.8), so this is a cross-family gate on the author, not two independent families.
+
+### Grok 4.6 (high) — 2 rounds
+
+Grok 4.6 (high) ran twice via `xcheck --grok`, each on two packets (the prior GPT review + PR #2 as context; and the site's structure / content / design). Grok is a live principal (not OS-sandboxed), so it ran review-only on a clean tree — the tree was verified untouched after each round. Grok found deeper product / IA / design issues than the GPT pass.
+
+**Round 1** — 7 findings (no high-severity): nav stubs, boot FOUC (deferred-module flash + per-tab replay), unlinked content graphs, evidence-in-template, positioning, homepage density, Worldview repo name. Applied: Topics Soon, blocking head-script boot skip + localStorage, Lab-teaser StatusBadge, evidence de-dup, brand, mobile dots + pet clearance.
+
+**Round 2** — validated round 1 and **caught a regression**: the longer brand + Soon pills re-opened the header wrap (~1025–1090px, measured). Applied: desktop header trimmed to 5 primary sections (Soon routes → footer + mobile menu; no wrap 861–1101px+); evidence honesty completed on cards + case pages (empty-state note); footer Soon badges; first-visit boot made keyboard/AT-safe (rest of page `inert`); hero alias dropped.
+
+**Deferred with reasons** (not fixed this round): content-graph refactor (buildStream ↔ collections, lab detail pages) vs frozen scope §10/§27; journey roles / About answered fields / more transformation cases (need real career content, MVP pass); 10-section homepage (frozen §4); `religion-council` rename (held issue #1); web fonts + robots/sitemap/JSON-LD (at deploy).
 
 ---
 
