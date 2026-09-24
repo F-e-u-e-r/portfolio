@@ -1,0 +1,11 @@
+export const PLACEHOLDER_ROUTES: string[];
+export const MAINTENANCE_ROUTES: string[];
+export const NOT_FOUND_ROUTE: string;
+export type RouteState = 'live' | 'placeholder' | 'maintenance' | 'not-found';
+export type RobotsDirective = 'index, follow' | 'noindex' | 'noindex, nofollow';
+export const ROBOTS: Record<RouteState | 'prelaunch', RobotsDirective>;
+export function normalizePath(input: string | URL): string;
+export function routeState(pathnameOrUrl: string | URL): RouteState;
+export function isSitemapRoute(pathnameOrUrl: string | URL): boolean;
+export function parseIndexable(value: unknown): boolean;
+export function robotsFor(pathnameOrUrl: string | URL, siteIndexable: boolean): RobotsDirective;

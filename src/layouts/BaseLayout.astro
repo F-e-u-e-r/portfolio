@@ -5,26 +5,56 @@ import SiteFooter from '../components/SiteFooter.astro';
 import PetCompanion from '../components/PetCompanion.astro';
 import MatrixBoot from '../components/MatrixBoot.astro';
 import { identity } from '../data/site';
+import { parseIndexable, robotsFor, routeState } from '../data/routes.mjs';
+import type { RobotsDirective } from '../data/routes.mjs';
 
-interface Props {
+/** Typed page metadata contract (deploy-readiness §3). */
+export interface PageMeta {
+  /** Page title without the site suffix → `<title> | Eric So`. Omitted → the site title. */
   title?: string;
   description?: string;
+  /** Page-level robots. The route-state policy is the floor: a page can tighten it, never loosen it. */
+  robots?: RobotsDirective;
+  /** Absolute canonical URL, or `false` to emit none (the 404 page). Default: site origin + current path. */
+  canonical?: string | false;
+  ogType?: 'website' | 'article' | 'profile';
+  /** Site-relative or absolute OG image (1200×630). Default `/og.png`. */
+  ogImage?: string;
+}
+
+interface Props extends PageMeta {
   active?: string;
   boot?: boolean;
   chromeless?: boolean;
 }
+
 const {
   title,
   description = identity.positioning,
+  robots,
+  canonical,
+  ogType = 'website',
+  ogImage = '/og.png',
   active,
   boot = true,
   chromeless = false,
 } = Astro.props;
 
-const fullTitle = title ? `${title} · ${identity.name}` : `${identity.name} — ${identity.role}`;
+const siteIndexable = parseIndexable(import.meta.env.PUBLIC_SITE_INDEXABLE);
 const siteOrigin = Astro.site ?? new URL('https://ccso.shsl.world');
-const canonical = new URL(Astro.url.pathname, siteOrigin).href;
-const ogImage = new URL('/og.png', siteOrigin).href;
+const pathname = Astro.url.pathname;
+const state = routeState(pathname);
+
+// Robots: policy floor (route state + pre-launch flag), tightened by the page if it asks for more.
+const rank = (v: string) => (v.startsWith('noindex, nofollow') ? 2 : v.startsWith('noindex') ? 1 : 0);
+const policyRobots = robotsFor(pathname, siteIndexable);
+const robotsContent = robots && rank(robots) > rank(policyRobots) ? robots : policyRobots;
+
+// Canonical: never on the 404 page; otherwise the production origin + this path (trailing slash by config).
+const canonicalHref =
+  canonical === false || state === 'not-found' ? undefined : (canonical ?? new URL(pathname, siteOrigin).href);
+const ogImageHref = new URL(ogImage, siteOrigin).href;
+const fullTitle = title ? `${title} | ${identity.name}` : `${identity.name} — ${identity.role}`;
 ---
 <!doctype html>
 <html lang="en">
@@ -33,21 +63,24 @@ const ogImage = new URL('/og.png', siteOrigin).href;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
+    <meta name="robots" content={robotsContent} />
+    {canonicalHref && <link rel="canonical" href={canonicalHref} />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    {siteIndexable && <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />}
     <meta name="theme-color" content="#080b0a" />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonical} />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta property="og:image" content={ogImage} />
+    {canonicalHref && <meta property="og:url" content={canonicalHref} />}
+    <meta property="og:image" content={ogImageHref} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:site_name" content={identity.name} />
-    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageHref} />
     <script is:inline>
       // Skip the boot overlay before first paint on repeat visits / reduced-motion (no flash).
       try {
