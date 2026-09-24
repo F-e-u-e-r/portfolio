@@ -1,0 +1,93 @@
+🌀 Building list of assets...
+✨ Read 38 files from the assets directory /Users/ccso/Developer/portfolio/dist
+🌀 Starting asset upload...
+🌀 Found 24 new or modified static assets to upload. Proceeding with upload...
++ /robots.txt
++ /sitemap-0.xml
++ /under-maintenance/index.html
++ /contact/index.html
++ /topics/index.html
++ /case-studies/sales-to-ops/index.html
++ /case-studies/hk-employment-rag/index.html
++ /journey/index.html
++ /sitemap-index.xml
++ /apple-touch-icon.png
++ /_astro/index.pgC7E4AR.css
++ /about/index.html
++ /writing/index.html
++ /case-studies/worldview-council/index.html
++ /lab/index.html
++ /index.html
++ /favicon.svg
++ /_astro/page.CMFgH77u.js
++ /404.html
++ /internal-builds/index.html
++ /_astro/BaseLayout.tbeJkAfP.css
++ /case-studies/starledger/index.html
++ /case-studies/index.html
++ /og.png
+Uploaded 8 of 24 assets
+Uploaded 16 of 24 assets
+Uploaded 24 of 24 assets
+✨ Success! Uploaded 24 files (1.70 sec)
+
+{
+  "preview": {
+    "id": "c10409bed2ed4ae7a26f998ebaec7249",
+    "slug": "m2-smoke",
+    "name": "m2-smoke",
+    "tags": [],
+    "observability": {
+      "enabled": false,
+      "head_sampling_rate": 1,
+      "redact_query_string": false,
+      "logs": {
+        "enabled": false,
+        "head_sampling_rate": 1,
+        "invocation_logs": true,
+        "persist": true,
+        "destinations": []
+      },
+      "traces": {
+        "enabled": false,
+        "head_sampling_rate": 1,
+        "persist": true,
+        "destinations": []
+      }
+    },
+    "logpush": false,
+    "tail_consumers": [],
+    "urls": [
+      "https://m2-smoke-ccso-portfolio.example-subdomain.workers.dev"
+    ],
+    "created_on": "2026-09-24T16:42:45.162969Z",
+    "updated_on": "2026-09-24T16:42:45.162969Z",
+    "deployed_on": null
+  },
+  "deployment": {
+    "id": "fe534f76-9704-471f-8387-42b1e306d7cd",
+    "number": 1,
+    "startup_time_ms": 1,
+    "compatibility_date": "2026-09-01",
+    "main_module": "no-op-worker.js",
+    "annotations": {
+      "workers/triggered_by": "create_preview_deployment_api"
+    },
+    "usage_model": "standard",
+    "urls": [
+      "https://fe534f76-ccso-portfolio.example-subdomain.workers.dev"
+    ],
+    "source": "wrangler",
+    "created_on": "2026-09-24T16:42:49.231486Z",
+    "assets": {
+      "config": {
+        "html_handling": "auto-trailing-slash",
+        "not_found_handling": "404-page",
+        "run_worker_first": false,
+        "base_path": "/"
+      }
+    },
+    "author_id": "0000000000000000000000000000000a",
+    "author_email": "redacted@example.invalid"
+  }
+}
