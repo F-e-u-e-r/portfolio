@@ -1,7 +1,9 @@
 ---
+// Under Maintenance: a normally-available service is temporarily degraded (e.g. a live demo backend).
+// 200 + noindex, nofollow, never in the sitemap. Not a stand-in for unfinished pages (see PlaceholderPage).
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
-<BaseLayout title="System status" description="Portfolio temporarily unavailable." boot={false} chromeless={true}>
+<BaseLayout title="System status" description="Portfolio temporarily unavailable." robots="noindex, nofollow" boot={false} chromeless={true}>
   <section class="maint">
     <div class="maint__panel">
       <p class="eyebrow">System status</p>

@@ -26,3 +26,7 @@ npm-debug.log*
 .playwright-mcp/
 .playwright-cli/
 /*.png
+
+# playwright output
+playwright-report/
+test-results/

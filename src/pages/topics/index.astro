@@ -1,25 +1,12 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-const topics = [
-  'rag', 'evaluation', 'automation', 'agentic-ai', 'governance', 'transformation', 'knowledge-engineering',
-];
+// In Preparation until cases and writing give the knowledge graph real edges (roadmap M4).
+import PlaceholderPage from '../../components/PlaceholderPage.astro';
+const topics = ['RAG', 'Evaluation', 'Automation', 'Agentic AI', 'Governance', 'Transformation', 'Knowledge Engineering'];
 ---
-<BaseLayout title="Topics" description="A knowledge and evidence graph connecting cases, builds and writing across RAG, evaluation, automation, agentic AI and governance." active="/topics/" boot={false}>
-  <section class="section container container--narrow">
-    <header class="page-head">
-      <p class="eyebrow">Topics <span class="soon-tag">Phase 2</span></p>
-      <h1>A knowledge & evidence graph.</h1>
-      <p class="lead">Topic pages will connect cases, builds and writing — a knowledge graph, not a blog category. The schema is reserved in v1; the pages arrive in Phase 2.</p>
-    </header>
-    <div class="topic-grid">
-      {topics.map((t) => <span class="topic mono">/topics/{t}</span>)}
-    </div>
-  </section>
-</BaseLayout>
-<style>
-  .page-head { margin-bottom: 2rem; }
-  .page-head h1 { font-size: var(--text-3xl); margin: 0.5rem 0 0.75rem; }
-  .soon-tag { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-accent-contrast); background: var(--c-accent-dim); border-radius: var(--radius-pill); padding: 0.12rem 0.5rem; margin-left: 0.5rem; vertical-align: middle; }
-  .topic-grid { display: flex; flex-wrap: wrap; gap: 0.6rem; }
-  .topic { border: 1px solid var(--c-border); border-radius: var(--radius-pill); padding: 0.4rem 0.9rem; font-size: var(--text-sm); color: var(--c-fg-muted); }
-</style>
+<PlaceholderPage
+  title="Topics"
+  description="A knowledge and evidence graph connecting cases, builds and writing across RAG, evaluation, automation, agentic AI and governance."
+  message="Topic pages will connect cases, builds and writing — a knowledge graph, not a blog category."
+  plannedContent={topics}
+  active="/topics/"
+/>

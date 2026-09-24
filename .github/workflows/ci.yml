@@ -1,0 +1,162 @@
+name: ci
+
+# Production pipeline. `verify` is the required check: type-check, build, verify dist/ against the route-state
+# policy (scripts/verify-dist.mjs). `e2e` is a normal check that the ruleset does not require yet: it fails red
+# when the smoke suite breaks, and joins the ruleset after three consecutive pull requests with `e2e` green.
+# `preview` (same-repository PRs) and `deploy` (main) ship the exact dist/ that passed `verify`; both stay
+# dormant until the repository variable CLOUDFLARE_DEPLOY_ENABLED is "true" and the Cloudflare secrets exist (M2).
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Pre-launch default: every page noindex, sitemap built but not advertised.
+  # M3 (Public MVP): set the repository variable PUBLIC_SITE_INDEXABLE=true.
+  PUBLIC_SITE_INDEXABLE: ${{ vars.PUBLIC_SITE_INDEXABLE || 'false' }}
+  WRANGLER_SEND_METRICS: 'false'
+
+jobs:
+  verify:
+    name: verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm run build
+      - run: npm run test:site
+      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        with:
+          name: dist-${{ github.sha }}
+          path: dist
+          retention-days: 7
+
+  e2e:
+    name: e2e
+    needs: verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5
+        with:
+          name: dist-${{ github.sha }}
+          path: dist
+      - run: npx playwright install --with-deps chromium
+      # Runs against `wrangler dev` (local, no account or secrets needed), so the 404 status and
+      # trailing-slash behaviour under test are the real static-asset semantics.
+      - run: npm run test:e2e
+        env:
+          CI: 'true'
+      - if: failure()
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        with:
+          name: playwright-report-${{ github.sha }}
+          path: playwright-report
+          retention-days: 7
+
+  # M2 — one Worker Preview per same-repository pull request (Workers Previews, Wrangler ≥ 4.135):
+  # `pr-<number>`, updated on every push, deleted by preview-cleanup.yml when the PR closes.
+  # Fork PRs never reach this job: GitHub withholds secrets from them and the guard below excludes them.
+  preview:
+    name: preview (pr-${{ github.event.pull_request.number }})
+    needs: verify
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      vars.CLOUDFLARE_DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    concurrency:
+      group: preview-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5
+        with:
+          name: dist-${{ github.sha }}
+          path: dist
+      - name: Create or update the Worker Preview
+        id: preview
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          out="$(npx wrangler preview --name "pr-${{ github.event.pull_request.number }}" --json)"
+          url="$(printf '%s' "$out" | jq -er '.preview_urls[0] // .preview.urls[0]')"
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+      - name: Post the Preview URL on the pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          BODY: "Preview `pr-${{ github.event.pull_request.number }}`: ${{ steps.preview.outputs.url }} (built from ${{ github.event.pull_request.head.sha }}; the dist that passed `verify`; noindex)"
+        run: gh pr comment "$PR" --edit-last --body "$BODY" || gh pr comment "$PR" --body "$BODY"
+
+  # M2.5 / M3 — production deploy of the verified artifact on every push to main.
+  deploy:
+    name: deploy (production)
+    needs: verify
+    if: >-
+      github.event_name != 'pull_request' &&
+      github.ref == 'refs/heads/main' &&
+      vars.CLOUDFLARE_DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    environment: production
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5
+        with:
+          name: dist-${{ github.sha }}
+          path: dist
+      - name: Deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx wrangler deploy --message "${{ github.sha }}"
+      # Production smoke against the live host (repository variable PRODUCTION_URL: the workers.dev URL at M2.5,
+      # https://ccso.shsl.world at M3). Fails the job — and therefore alerts — if the contract regresses.
+      - name: Production smoke
+        if: vars.PRODUCTION_URL != ''
+        env:
+          BASE: ${{ vars.PRODUCTION_URL }}
+        run: |
+          set -euo pipefail
+          code() { curl -s -o /dev/null -w '%{http_code}' "$1"; }
+          test "$(code "$BASE/")" = "200"
+          test "$(code "$BASE/this-route-does-not-exist/")" = "404"
+          test "$(code "$BASE/robots.txt")" = "200"
+          test "$(code "$BASE/sitemap-index.xml")" = "200"
+          test "$(curl -s -o /dev/null -w '%{redirect_url}' "$BASE/case-studies")" = "$BASE/case-studies/"
+          curl -s "$BASE/" | grep -q '<link rel="canonical" href="https://ccso.shsl.world/"'

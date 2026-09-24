@@ -1,7 +1,7 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import { identity } from '../../data/site';
-const questions = [
+// In Preparation until the About narrative lands (roadmap 6A / M3).
+import PlaceholderPage from '../../components/PlaceholderPage.astro';
+const planned = [
   'Where I came from',
   'Why transformation',
   'How automation became part of the work',
@@ -10,24 +10,9 @@ const questions = [
   'What kind of problems I work best on',
 ];
 ---
-<BaseLayout title="About" description="Where Eric So came from, why transformation, and how applied AI became the next capability layer." active="/about/" boot={false}>
-  <section class="section container container--narrow">
-    <header class="page-head">
-      <p class="eyebrow">About</p>
-      <h1>{identity.thesis}</h1>
-    </header>
-    <p class="lead intro">This page answers the questions a hiring manager actually has — not a CV in prose.</p>
-    <ul class="q-list">
-      {questions.map((q) => <li>{q}</li>)}
-    </ul>
-    <p class="subtle foot mono">Full narrative: Phase 2 content. CV history stays concise.</p>
-  </section>
-</BaseLayout>
-<style>
-  .page-head { margin-bottom: 1.5rem; }
-  .page-head h1 { font-size: var(--text-2xl); text-wrap: balance; }
-  .intro { margin-bottom: 1.5rem; }
-  .q-list { list-style: none; padding: 0; display: grid; gap: 0.75rem; }
-  .q-list li { border-left: 2px solid var(--c-accent-dim); padding-left: 1rem; color: var(--c-fg-muted); }
-  .foot { margin-top: 2rem; font-size: var(--text-sm); }
-</style>
+<PlaceholderPage
+  title="About"
+  description="Where Eric So came from, why transformation, and how applied AI became the next capability layer."
+  plannedContent={planned}
+  active="/about/"
+/>

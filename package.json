@@ -10,13 +10,24 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "astro": "astro"
+    "astro": "astro",
+    "test:site": "node scripts/verify-dist.mjs",
+    "test:e2e": "playwright test",
+    "ci": "npm run check && npm run build && npm run test:site",
+    "cf:dev": "wrangler dev --port 8787 --ip 127.0.0.1",
+    "deploy": "wrangler deploy"
   },
   "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
     "astro": "^7.3.4"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
-    "typescript": "^6.0.3"
+    "@playwright/test": "^1.63.0",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.137.0"
+  },
+  "engines": {
+    "node": ">=22.12.0"
   }
 }

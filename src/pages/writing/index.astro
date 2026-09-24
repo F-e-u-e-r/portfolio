@@ -1,5 +1,6 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
+// In Preparation until the first article is published (roadmap M4).
+import PlaceholderPage from '../../components/PlaceholderPage.astro';
 const themes = [
   'AI fundamentals for transformation professionals',
   'RAG / grounded AI',
@@ -10,29 +11,10 @@ const themes = [
   'AI adoption',
 ];
 ---
-<BaseLayout title="Writing" description="Practical notes on applied AI, automation, evaluation and transformation — understanding not just how the technology works, but when it is worth using." active="/writing/" boot={false}>
-  <section class="section container container--narrow">
-    <header class="page-head">
-      <p class="eyebrow">Writing <span class="soon-tag">To be launched</span></p>
-      <h1>Practical notes on applied AI.</h1>
-      <p class="lead">Practical notes on applied AI, automation, evaluation and transformation — for people who want to understand not only how the technology works, but when it is worth using.</p>
-    </header>
-    <div class="card panel">
-      <p class="eyebrow">Planned themes</p>
-      <ul class="themes">
-        {themes.map((t) => <li>{t}</li>)}
-      </ul>
-    </div>
-    <p class="subtle foot">No publishing schedule promised. Articles will link back to the Topics knowledge graph as they land.</p>
-  </section>
-</BaseLayout>
-<style>
-  .page-head { margin-bottom: 2rem; }
-  .page-head h1 { font-size: var(--text-3xl); margin: 0.5rem 0 0.75rem; }
-  .soon-tag { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-accent-contrast); background: var(--c-accent-dim); border-radius: var(--radius-pill); padding: 0.12rem 0.5rem; margin-left: 0.5rem; vertical-align: middle; }
-  .panel { padding: 1.75rem; }
-  .themes { columns: 2; column-gap: 2rem; padding-left: 1.1rem; margin-top: 1rem; color: var(--c-fg-muted); }
-  .themes li { margin-bottom: 0.5rem; break-inside: avoid; }
-  .foot { margin-top: 1.5rem; font-size: var(--text-sm); }
-  @media (max-width: 640px) { .themes { columns: 1; } }
-</style>
+<PlaceholderPage
+  title="Writing"
+  description="Practical notes on applied AI, automation, evaluation and transformation — understanding not just how the technology works, but when it is worth using."
+  plannedContent={themes}
+  firstItem={{ label: 'First article', title: 'Why I Chose Astro for This Portfolio', note: 'Choosing the simplest architecture that fits the problem.' }}
+  active="/writing/"
+/>

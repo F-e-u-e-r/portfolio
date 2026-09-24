@@ -1,8 +1,28 @@
-# Cloudflare Workers Static Assets (§34) — serves the static Astro build in dist/.
-# Deploy: `npm run build` then `npx wrangler deploy` (requires `wrangler login`).
+# Cloudflare Workers Static Assets (§34) — serves the static Astro build in dist/ (assets-only, no Worker script).
+# Local: `npm run build && npm run cf:dev` (http://127.0.0.1:8787 — real 404 status and trailing-slash behaviour).
+# Production: `npm run build && npx wrangler deploy` — from CI once the M2 Cloudflare credentials exist.
 name = "ccso-portfolio"
 compatibility_date = "2026-09-01"
 
+# M2.5: temporary production on <name>.<subdomain>.workers.dev. Set to false at M3, once the custom domain
+# is the only canonical host; keep preview_urls so Preview URLs stay available on workers.dev.
+workers_dev = true
+preview_urls = true
+
+# Worker Previews (M2, Wrangler ≥ 4.135): the `previews` block is required even when empty — Previews do not
+# inherit production settings, and static assets stay at the top level (uploaded with each Preview).
+# A Preview can be created before the Worker's first production deploy.
+previews = { }
+
 [assets]
 directory = "./dist"
+# Unknown routes serve dist/404.html with a real 404 status — no SPA fallback to the homepage.
 not_found_handling = "404-page"
+# /about → /about/ (redirect), /about/ → dist/about/index.html, /about.html → /about — the default, made explicit
+# because it is the production contract that astro `trailingSlash: 'always'` and the dist gate assume.
+html_handling = "auto-trailing-slash"
+
+# M3 — added only after shsl.world is an active Cloudflare zone (deploy-readiness D-1):
+# [[routes]]
+# pattern = "ccso.shsl.world"
+# custom_domain = true
