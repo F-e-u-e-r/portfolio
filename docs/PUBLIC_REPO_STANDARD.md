@@ -56,7 +56,7 @@ What it does — two or three business-readable sentences.
 Rules:
 - The H1 is the repository's own name. A template repository is named as one (`# StarLedger Template`).
 - No changelog, phase log or version-by-version narrative above Quick start — that goes to `CHANGELOG.md`.
-- The bilingual file, where one exists, is `README.zh-Hant.md`.
+- The bilingual file, where one exists, is `README.zh-Hant.md`. The filename encodes the script; the link text may name the variety actually used (繁體中文（香港） on `tailscale-ai-egress`) — D16.
 - After the portfolio launches, Tier A repos add one line under the badges: `Case study → https://ccso.shsl.world/…` (§8).
 
 ## 4. GitHub Topics
@@ -88,7 +88,7 @@ A cross-repository **capability taxonomy**, not marketing keywords.
 
 - New releases use `vMAJOR.MINOR.PATCH`; pre-releases use `vMAJOR.MINOR.PATCH-alpha.N` / `-beta.N` / `-rc.N` — for iterations *toward a specific version*.
 - **Lifecycle is not a tag prefix.** "Alpha software" is expressed by the status badge (§6) and GitHub's pre-release flag, not by `alpha-` in the tag.
-- Every new canonical tag created after adoption of this standard gets a GitHub Release; historical tags are not backfilled unless explicitly listed in the per-repo table below. The README version badge matches the latest release.
+- Every new canonical tag created after adoption of this standard gets a GitHub Release; historical tags are not backfilled unless explicitly listed in the per-repo table below. The README version badge matches the latest release and is a **static, exact-version badge linked to that Release** — not a dynamic latest-release badge: shields' default renders "no releases" while a repository's only releases are pre-releases, and version representation is part of the release contract (D13). A "badge matches the latest Release" check is later release-process automation.
 - Version numbers are not comparable between repositories; the next number reflects each project's own maturity and change scope. A metadata-only change never justifies a major bump.
 - Historical tags and releases are not deleted or rewritten. Historical release titles keep the name the project had at the time; the *next* release carries the current name (decision D4 — `religion-council`'s eight "Religion Council" releases stay as they are).
 - **Governed exception:** new releases follow the convention above *unless an existing distribution or runtime contract depends on another format; documented exceptions are preserved until explicitly migrated.*
@@ -122,7 +122,7 @@ Per-repository conventions (policy only — *release state*, i.e. what has been 
 | skills (Opus Pack) | `vX.Y.Z` from `v0.1.16` (legacy `alpha-0.1.x` before) | one tag + Release per `plugin.json` bump; pre-release while alpha |
 | tailscale-ai-egress | `vX.Y.Z` (conforming) | as is |
 | religion-council | `vX.Y.Z` (conforming; the stray `v0.1` stays) | no release solely for metadata; the next genuine release is titled "Worldview Council …" |
-| ai-arena | none yet | first tag `v0.1.0` after LICENSE + CONTRIBUTING (§9) |
+| ai-arena | none yet | first tag `v0.1.0` after LICENSE + CONTRIBUTING (§9), published as a normal release — `0.x` already states early maturity (D11) |
 
 ## 6. Status
 
@@ -164,8 +164,22 @@ Every public repository has an explicit, deliberate licensing state — which is
 - `portfolio` code/content licensing is decided separately, in the licensing implementation step.
 - A repository that invites contributions (`ai-arena`) states its contribution policy in `CONTRIBUTING.md`: the contributor has the right to submit the content (prompts, model outputs, screenshots, evaluation artifacts) and grants the repository the right to display and redistribute it. A code license does not cover that by itself (decision D8).
 
+Per-repository licensing state (decided 2026-09-24 — D8, D11, D14, D15; implementation state in issue #1):
+
+| Repo | Licensing state |
+| --- | --- |
+| portfolio | Code MIT (pristine `LICENSE`); original written content, case studies, articles, images, graphics, logos and brand assets © Eric So, All Rights Reserved unless otherwise stated — scope in `NOTICE.md`, summarised in the README; `package.json` `"license": "MIT"` describes the package |
+| starledger · starledger-template | Apache-2.0 (as is) |
+| ai-pet-usage | AGPL-3.0-only (as is) |
+| homebrew-tap | BSD-2-Clause for the tap; the README states that the tap licence ≠ the app licence (AI Pet Usage: AGPL-3.0) |
+| skills (Opus Pack) · tailscale-ai-egress | MIT (as is) |
+| religion-council | Code MIT + curated content CC BY 4.0 (`LICENSE-CONTENT`) (as is) |
+| ai-arena | Code MIT + contribution/content policy in `CONTRIBUTING.md`: rights to submit; non-exclusive, worldwide, royalty-free licence to host, reproduce, format, display and redistribute as part of AI Arena and its repository; third-party and model-provider terms continue to apply; no confidential information or personal data; removal considered for the maintained site and current branch only |
+| Tier B forks | Upstream licensing; not normalised |
+
 ## 10. Changes to this standard
 
 - **2026-09-24 — v1.** Established from the consolidated portfolio review (§11–§18) and decisions D1–D10; supersedes the "ai-pet-usage README as gold standard" approach of the original issue #1.
 - **2026-09-24 — repository rename.** `opus-pack` was renamed to `skills` by the owner; the project name remains Opus Pack. Current references here use `skills`; the review record keeps the name that was current at audit time.
 - **2026-09-24 — scope change.** `tradingview-mcp` was made private and removed from the portfolio and this standard; the derivative tier was removed as empty, and forks are now Tier B.
+- **2026-09-24 — Step 5 decisions (D11–D17).** §3 bilingual label note; §5 static exact-version badges and ai-arena's `v0.1.0` as a normal release; §9 per-repository licensing state table. Record: the review record's "Post-review implementation decisions" addendum.

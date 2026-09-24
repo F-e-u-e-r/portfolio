@@ -2,6 +2,14 @@
 
 Concise decision log (newest first). Each entry: decision · rejected alternative · why.
 
+## 2026-09-24 — Step 5 decisions (licensing, badges, bilingual filenames, forks)
+Full wording: [`reviews/2026-09-24-public-repo-metadata-review.md`](reviews/2026-09-24-public-repo-metadata-review.md) (D11–D17).
+- **Portfolio licensing: code MIT, original content All Rights Reserved.** `LICENSE` = unmodified MIT; `NOTICE.md` scopes the exclusion (case-study text, articles, images, graphics, logos, brand assets © Eric So); the README License section says it in one glance; `package.json` `"license": "MIT"` describes the package. Rejected: CC BY-NC-ND for the content. Why: complexity > benefit for this site, and the NC / ND boundaries blur ordinary quotation, screenshots and excerpts.
+- **Static exact-version release badges, not dynamic latest-release badges.** Rejected: shields' `github/v/release`. Why: StarLedger's latest canonical release is a pre-release (`v1.3.0-alpha.1`) and the dynamic badge's default renders "no releases" for it (observed 2026-09-24); version representation is part of the release contract. A "badge matches the latest Release" check is later automation.
+- **AI Arena rights model: MIT code + a contribution/content policy with honest removal wording; `v0.1.0` as a normal release.** Rejected: "permanent display and redistribution rights" beside "removable on request" (contradictory), and a pre-release flag (no information beyond `0.x`).
+- **Public forks are reworded and archived, never made private in place.** Rejected: switching `jianying-headless` to private. Why: GitHub — "You cannot change the visibility of a fork by itself"; a private copy would be a new standalone repository, and a reference fork does not need one.
+- **Bilingual filename `README.zh-Hant.md`, display label unchanged.** Rejected: renaming the label to match the filename. Why: the filename encodes the script convention, the label the variety actually used (繁體中文（香港） on `tailscale-ai-egress`).
+
 ## 2026-09-24 — Public repository standard
 - **One metadata standard for the public repos: [`PUBLIC_REPO_STANDARD.md`](PUBLIC_REPO_STANDARD.md)** (tiers, description, top fold, topics, releases, status, integrity). Rejected: the `ai-pet-usage` README as a full gold-standard skeleton (issue #1's original approach). Why: it forced identical documentation, over-length descriptions and 13–16-topic lists, and would have introduced capability claims — see [`reviews/2026-09-24-public-repo-metadata-review.md`](reviews/2026-09-24-public-repo-metadata-review.md) (decisions D1–D10).
 - **Release naming has a governed exception, not a blanket rule.** `ai-pet-usage` keeps `alpha-vX.Y.Z` until its updater / release workflow / Homebrew cask are migrated together; `skills` (Opus Pack — repository renamed from `opus-pack` on 2026-09-24) gets canonical release `v0.1.16` (pre-release flag), matching its `plugin.json` version of record.
