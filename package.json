@@ -12,6 +12,7 @@
     "check": "astro check",
     "astro": "astro",
     "test:site": "node scripts/verify-dist.mjs",
+    "test:tools": "node --test tests/tools/*.test.mjs",
     "test:e2e": "playwright test",
     "ci": "npm run check && npm run build && npm run test:site",
     "cf:dev": "wrangler dev --port 8787 --ip 127.0.0.1",

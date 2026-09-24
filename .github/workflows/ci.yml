@@ -1,10 +1,12 @@
 name: ci
 
-# Production pipeline. `verify` is the required check: type-check, build, verify dist/ against the route-state
-# policy (scripts/verify-dist.mjs). `e2e` is a normal check that the ruleset does not require yet: it fails red
-# when the smoke suite breaks, and joins the ruleset after three consecutive pull requests with `e2e` green.
-# `preview` (same-repository PRs) and `deploy` (main) ship the exact dist/ that passed `verify`; both stay
-# dormant until the repository variable CLOUDFLARE_DEPLOY_ENABLED is "true" and the Cloudflare secrets exist (M2).
+# Production pipeline. `verify` and `e2e` are the required checks: type-check, build, verify dist/ against the
+# route-state policy (scripts/verify-dist.mjs), then the Playwright smoke against `wrangler dev`.
+# `preview` (same-repository PRs) and `deploy` (main) ship the exact dist/ that passed `verify`. They are gated by
+# two independent repository variables so that enabling pull-request Previews can never production-deploy:
+#   CLOUDFLARE_PREVIEW_ENABLED = "true"  → `preview` here + preview-cleanup.yml            (M2)
+#   CLOUDFLARE_DEPLOY_ENABLED  = "true"  → `deploy` (production, push to main)             (M2.5)
+# Both also need the secrets CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID (a token scoped to the Worker, Editor role).
 on:
   pull_request:
   push:
@@ -75,13 +77,15 @@ jobs:
   # M2 — one Worker Preview per same-repository pull request (Workers Previews, Wrangler ≥ 4.135):
   # `pr-<number>`, updated on every push, deleted by preview-cleanup.yml when the PR closes.
   # Fork PRs never reach this job: GitHub withholds secrets from them and the guard below excludes them.
+  # Preview URLs are public by default (noindex meta + Cloudflare Access "Previews only" are the controls), and an
+  # immutable Deployment URL may stay reachable after its Preview is deleted — never preview unpublished material.
   preview:
     name: preview (pr-${{ github.event.pull_request.number }})
     needs: verify
     if: >-
       github.event_name == 'pull_request' &&
       github.event.pull_request.head.repo.full_name == github.repository &&
-      vars.CLOUDFLARE_DEPLOY_ENABLED == 'true'
+      vars.CLOUDFLARE_PREVIEW_ENABLED == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -100,6 +104,11 @@ jobs:
         with:
           name: dist-${{ github.sha }}
           path: dist
+      # The URL parser proves itself against the captured real Wrangler output before anything touches Cloudflare.
+      - run: npm run test:tools
+      # Wrangler prints the asset-upload progress to stdout before the `--json` document, so the URL is extracted
+      # by scripts/extract-wrangler-preview-url.mjs (fail closed: no URL → this step fails, nothing is posted).
+      # The raw output is deliberately not echoed — it carries the deploying account's e-mail and this log is public.
       - name: Create or update the Worker Preview
         id: preview
         env:
@@ -107,7 +116,7 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           out="$(npx wrangler preview --name "pr-${{ github.event.pull_request.number }}" --json)"
-          url="$(printf '%s' "$out" | jq -er '.preview_urls[0] // .preview.urls[0]')"
+          url="$(printf '%s' "$out" | node scripts/extract-wrangler-preview-url.mjs)"
           echo "url=$url" >> "$GITHUB_OUTPUT"
       - name: Post the Preview URL on the pull request
         env:
@@ -115,6 +124,13 @@ jobs:
           PR: ${{ github.event.pull_request.number }}
           BODY: "Preview `pr-${{ github.event.pull_request.number }}`: ${{ steps.preview.outputs.url }} (built from ${{ github.event.pull_request.head.sha }}; the dist that passed `verify`; noindex)"
         run: gh pr comment "$PR" --edit-last --body "$BODY" || gh pr comment "$PR" --body "$BODY"
+      # Contract checks against the live Preview: 200s, real 404 for any unknown route, the custom 404 page on a
+      # browser navigation (Sec-Fetch-Mode: navigate — the edge serves dist/404.html only to navigation requests),
+      # canonical on ccso.shsl.world, robots meta matching PUBLIC_SITE_INDEXABLE. Red here = the Preview regressed.
+      - name: Preview smoke
+        env:
+          BASE: ${{ steps.preview.outputs.url }}
+        run: bash scripts/smoke-preview.sh "$BASE"
 
   # M2.5 / M3 — production deploy of the verified artifact on every push to main.
   deploy:
