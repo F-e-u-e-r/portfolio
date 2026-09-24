@@ -2,6 +2,9 @@
 
 Concise decision log (newest first). Each entry: decision · rejected alternative · why.
 
+## 2026-09-24 — Portfolio `main` governance
+- **`main` is protected by the ruleset `protect-main`: pull request required, required status check `verify`, 0 approving reviews, merge commits only.** Also: deletion and force-push blocked; review-thread resolution required; `strict` (branch must be up to date) off; bypass = Repository Admin role in pull-request mode only (currently the owner alone). Applied 2026-09-24 19:07, after M1's `verify` had run on `main`; validated on the record pull request that carries this entry. Rejected: allowing squash as a second merge method — the repository's convention is merge commits and the ruleset encodes the workflow actually used (`ai-arena` and `tailscale-ai-egress` keep their own squash-only exceptions); requiring an approving review — solo maintainer, same reasoning as the solo-maintained rulesets below. `e2e` (Playwright smoke against `wrangler dev`) runs on every pull request and fails red, but is not a required check until three consecutive pull requests complete with it green; promoting it is a separate governance change, not bundled here.
+
 ## 2026-09-24 — Step 5 decisions (licensing, badges, bilingual filenames, forks)
 Full wording: [`reviews/2026-09-24-public-repo-metadata-review.md`](reviews/2026-09-24-public-repo-metadata-review.md) (D11–D17).
 - **Portfolio licensing: code MIT, original content All Rights Reserved.** `LICENSE` = unmodified MIT; `NOTICE.md` scopes the exclusion (case-study text, articles, images, graphics, logos, brand assets © Eric So); the README License section says it in one glance; `package.json` `"license": "MIT"` describes the package. Rejected: CC BY-NC-ND for the content. Why: complexity > benefit for this site, and the NC / ND boundaries blur ordinary quotation, screenshots and excerpts.
@@ -19,7 +22,7 @@ Full wording: [`reviews/2026-09-24-public-repo-metadata-review.md`](reviews/2026
 ## 2026-09-24 — Solo-maintained repository rulesets
 - **PRs and required CI remain mandatory; an external approving review is not required.** Applied to `ai-pet-usage`, `skills`, `tailscale-ai-egress`, `religion-council`, `ai-arena`: `required_approving_review_count` 1 → 0 (and `require_last_push_approval` true → false on `ai-arena`, which otherwise still demanded an approval). Untouched: PR required, required status checks where configured, block force-push / deletion, linear history where configured, and the bypass list (Repository Admin role, PR-only — currently the owner alone). Rejected: routine owner `--admin` bypass with exception comments (an exception that becomes the normal process). Revisit if a repository gains additional maintainers. `ai-pet-usage` initially had no `required_status_checks` rule; its `swift-tests` job now runs on every pull request and is the sole required check (`strict: false`), validated end to end on a PR that was blocked while the check was pending and merged without approval once green.
 
-## 2026-09-24 — Deploy readiness (decided; implemented at deploy)
+## 2026-09-24 — Deploy readiness (decided; implemented in M1 — PR #19)
 - **`robots.txt` + sitemap are deploy requirements** (`@astrojs/sitemap`; `robots.txt` points at `/sitemap-index.xml`). JSON-LD is launch polish; web fonts are visual polish. Rejected: one undifferentiated "at deploy" bundle.
 - **`noindex, nofollow` meta on `/under-maintenance` and placeholder pages** (Writing, Topics). Why: `robots.txt` controls crawling, not indexing.
 - **AI crawlers — discoverable, not training by default:** allow `OAI-SearchBot` and `Claude-SearchBot`; disallow `GPTBot` and `ClaudeBot`. `Google-Extended` (Gemini grounding *and* training) is an open content-use choice, deliberately not decided yet.
@@ -38,4 +41,4 @@ Full wording: [`reviews/2026-09-24-public-repo-metadata-review.md`](reviews/2026
 - Real content for all cases + about + journey milestones (MVP pass).
 - LinkedIn URL + hosted resume (`src/data/site.ts` TODO).
 - Google Fonts (Inter / JetBrains Mono) vs. current system stack.
-- Cloudflare deploy + custom domain `ccso.shsl.world`; `secc.studio` → redirect.
+- Cloudflare deploy (M2 Worker Previews → `workers.dev`) + custom domain `ccso.shsl.world` (M3); `secc.studio` fully deferred by the owner's 2026-09-24 roadmap (no DNS change, no redirect).
