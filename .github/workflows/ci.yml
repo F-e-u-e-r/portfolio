@@ -1,10 +1,10 @@
 name: ci
 
 # Production pipeline. `verify` is the required check: type-check, build, verify dist/ against the route-state
-# policy (scripts/verify-dist.mjs). `e2e` is advisory until it has been green on three consecutive pull requests,
-# then `continue-on-error` is removed and it joins the ruleset. `preview` (same-repository PRs) and `deploy` (main)
-# ship the exact dist/ that passed `verify`; both stay dormant until the repository variable
-# CLOUDFLARE_DEPLOY_ENABLED is "true" and the Cloudflare secrets exist (M2).
+# policy (scripts/verify-dist.mjs). `e2e` is a normal check that the ruleset does not require yet: it fails red
+# when the smoke suite breaks, and joins the ruleset after three consecutive pull requests with `e2e` green.
+# `preview` (same-repository PRs) and `deploy` (main) ship the exact dist/ that passed `verify`; both stay
+# dormant until the repository variable CLOUDFLARE_DEPLOY_ENABLED is "true" and the Cloudflare secrets exist (M2).
 on:
   pull_request:
   push:
@@ -45,10 +45,9 @@ jobs:
           retention-days: 7
 
   e2e:
-    name: e2e (advisory)
+    name: e2e
     needs: verify
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
       - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
@@ -108,7 +107,7 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           out="$(npx wrangler preview --name "pr-${{ github.event.pull_request.number }}" --json)"
-          url="$(printf '%s' "$out" | jq -er '.preview.urls[0]')"
+          url="$(printf '%s' "$out" | jq -er '.preview_urls[0] // .preview.urls[0]')"
           echo "url=$url" >> "$GITHUB_OUTPUT"
       - name: Post the Preview URL on the pull request
         env:

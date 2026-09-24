@@ -9,6 +9,11 @@ compatibility_date = "2026-09-01"
 workers_dev = true
 preview_urls = true
 
+# Worker Previews (M2, Wrangler ≥ 4.135): the `previews` block is required even when empty — Previews do not
+# inherit production settings, and static assets stay at the top level (uploaded with each Preview).
+# A Preview can be created before the Worker's first production deploy.
+previews = { }
+
 [assets]
 directory = "./dist"
 # Unknown routes serve dist/404.html with a real 404 status — no SPA fallback to the homepage.
