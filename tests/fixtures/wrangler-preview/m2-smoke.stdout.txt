@@ -58,7 +58,7 @@ Uploaded 24 of 24 assets
     "logpush": false,
     "tail_consumers": [],
     "urls": [
-      "https://m2-smoke-ccso-portfolio.secc-biz.workers.dev"
+      "https://m2-smoke-ccso-portfolio.example-subdomain.workers.dev"
     ],
     "created_on": "2026-09-24T16:42:45.162969Z",
     "updated_on": "2026-09-24T16:42:45.162969Z",
@@ -75,7 +75,7 @@ Uploaded 24 of 24 assets
     },
     "usage_model": "standard",
     "urls": [
-      "https://fe534f76-ccso-portfolio.secc-biz.workers.dev"
+      "https://fe534f76-ccso-portfolio.example-subdomain.workers.dev"
     ],
     "source": "wrangler",
     "created_on": "2026-09-24T16:42:49.231486Z",

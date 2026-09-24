@@ -3,7 +3,15 @@
 #
 # Usage:  bash scripts/smoke-preview.sh https://pr-12-ccso-portfolio.<subdomain>.workers.dev
 #         PUBLIC_SITE_INDEXABLE=true bash scripts/smoke-preview.sh <base-url>   # launch-mode build (M3)
+#         bash scripts/smoke-preview.sh http://127.0.0.1:8787                    # local wrangler dev (loopback only)
 # Exit 0 = every check passed; exit 1 = the failed checks are listed. Nothing is mutated.
+#
+# Cloudflare Access service token (for Previews behind Access "Previews only"):
+#   CF_ACCESS_CLIENT_ID + CF_ACCESS_CLIENT_SECRET both set → every request carries CF-Access-Client-Id / -Secret;
+#   neither set                                            → plain requests (a public host, or local dev);
+#   exactly one set                                        → refuse to run, before any network request.
+# The credentials only ever go to the base URL given on the command line; the caller pins that hostname first
+# (ci.yml: the parser's --expect-hostname), so the token cannot be sent to an unexpected host.
 #
 # bash + curl, not Node: the custom-404 check must send `Sec-Fetch-Mode: navigate`, a forbidden request header
 # that Node's fetch (undici) silently drops — verified 2026-09-25 against a live deployment URL; curl sends it.
@@ -19,8 +27,22 @@ BASE="${1:?usage: smoke-preview.sh <base-url>}"
 BASE="${BASE%/}"
 case "$BASE" in
   https://*) ;;
-  *) echo "smoke-preview: base URL must be https:// (got: $BASE)" >&2; exit 1 ;;
+  http://127.0.0.1|http://127.0.0.1:*|http://localhost|http://localhost:*)
+    echo "smoke-preview: loopback http — local semantics (wrangler dev serves 404.html to every client), not the edge" ;;
+  *) echo "smoke-preview: base URL must be https:// (or loopback http for local dev); got: $BASE" >&2; exit 1 ;;
 esac
+
+# Cloudflare Access: both-or-neither, decided before the first request leaves this script.
+ACCESS_ID="${CF_ACCESS_CLIENT_ID:-}"
+ACCESS_SECRET="${CF_ACCESS_CLIENT_SECRET:-}"
+ACCESS_HEADERS=()
+if [ -n "$ACCESS_ID" ] && [ -n "$ACCESS_SECRET" ]; then
+  ACCESS_HEADERS=(-H "CF-Access-Client-Id: $ACCESS_ID" -H "CF-Access-Client-Secret: $ACCESS_SECRET")
+  echo "smoke-preview: Cloudflare Access service token present — every request carries CF-Access-Client-Id / -Secret"
+elif [ -n "$ACCESS_ID" ] || [ -n "$ACCESS_SECRET" ]; then
+  echo "smoke-preview: CF_ACCESS_CLIENT_ID and CF_ACCESS_CLIENT_SECRET must be set together (exactly one is set) — refusing to run" >&2
+  exit 1
+fi
 
 # The robots meta on live routes follows the build mode — the same rule as scripts/verify-dist.mjs
 # (src/data/routes.mjs: ROBOTS.live when PUBLIC_SITE_INDEXABLE is exactly "true", ROBOTS.prelaunch otherwise).
@@ -39,9 +61,12 @@ check() { # label expected actual
     failures=$((failures + 1))
   fi
 }
+# Every request goes through req(): the Access headers (when configured) are attached here and nowhere else.
+# The `${arr[@]+...}` form keeps an empty array safe under `set -u` on bash 3.2 (macOS) as well as bash 5.
+req() { curl -sS ${ACCESS_HEADERS[@]+"${ACCESS_HEADERS[@]}"} "$@"; }
 # curl prints `000` as the status when the connection itself fails (its reason goes to stderr, into the job log).
-status() { curl -sS -o /dev/null -w '%{http_code}' "$@" || true; }
-fetch() { curl -sS "$@" || true; }
+status() { req -o /dev/null -w '%{http_code}' "$@" || true; }
+fetch() { req "$@" || true; }
 attr() { # html attribute-value extraction: attr <html> <regex-with-one-capture>
   printf '%s' "$1" | grep -o "$2" | head -1 | sed -E 's/.*="([^"]*)"$/\1/'
 }
@@ -57,7 +82,7 @@ check "custom 404 page robots meta" "noindex" "$(attr "$nav_body" '<meta name="r
 check "custom 404 page has no canonical" 0 "$(printf '%s' "$nav_body" | grep -c 'rel="canonical"' || true)"
 check "GET /robots.txt status" 200 "$(status "$BASE/robots.txt")"
 check "GET /sitemap-index.xml status" 200 "$(status "$BASE/sitemap-index.xml")"
-check "GET /case-studies redirects to the trailing-slash form" "$BASE/case-studies/" "$(curl -sS -o /dev/null -w '%{redirect_url}' "$BASE/case-studies" || true)"
+check "GET /case-studies redirects to the trailing-slash form" "$BASE/case-studies/" "$(req -o /dev/null -w '%{redirect_url}' "$BASE/case-studies" || true)"
 
 home="$(fetch "$BASE/")"
 check "homepage canonical" 'https://ccso.shsl.world/' "$(attr "$home" '<link rel="canonical" href="[^"]*"')"

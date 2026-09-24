@@ -9,13 +9,19 @@
 // Contract: scan the whole output for JSON objects, take the LAST one that carries a Preview URL —
 // `.preview_urls[0]` or `.preview.urls[0]` — require it to be an https URL, print exactly that URL.
 // Anything else (no JSON, no URL, a malformed document, a non-https value) exits 1 with nothing on stdout.
+// With `--expect-hostname <host>` the URL is emitted only if its hostname is exactly that host (the preview job
+// pins `pr-<PR>-<worker>.<CLOUDFLARE_WORKERS_SUBDOMAIN>.workers.dev`, so the Access service token that the
+// smoke sends afterwards can never travel to any other host); a missing or malformed expectation also exits 1.
 //
-// Usage:  node scripts/extract-wrangler-preview-url.mjs < wrangler-stdout
-//         node scripts/extract-wrangler-preview-url.mjs path/to/captured-stdout
+// Usage:  node scripts/extract-wrangler-preview-url.mjs [--expect-hostname <host>] < wrangler-stdout
+//         node scripts/extract-wrangler-preview-url.mjs [--expect-hostname <host>] path/to/captured-stdout
 // Tests:  npm run test:tools  (tests/tools/extract-wrangler-preview-url.test.mjs)
 
 import { readFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
+
+// One or more dot-separated labels of letters, digits and inner hyphens — a hostname, not a pattern.
+const HOSTNAME = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/;
 
 /**
  * Every balanced `{ … }` span in `text`, in order of its opening brace. String literals and escapes are
@@ -109,9 +115,54 @@ export function extractPreviewUrl(text) {
   return candidate;
 }
 
+/**
+ * @param {string} url       a URL already accepted by extractPreviewUrl
+ * @param {unknown} expected the exact hostname the URL must have (compared case-insensitively, never as a suffix)
+ * @returns {string}         the same URL
+ * @throws {Error}           when the expectation is missing or malformed, or the hostname differs
+ */
+export function assertHostname(url, expected) {
+  if (typeof expected !== 'string' || expected.trim() === '') {
+    throw new Error('expected hostname is empty — is the repository variable CLOUDFLARE_WORKERS_SUBDOMAIN set?');
+  }
+  const want = expected.trim().toLowerCase();
+  if (!HOSTNAME.test(want)) {
+    throw new Error(`expected hostname is not a valid hostname: ${JSON.stringify(expected)}`);
+  }
+  const host = new URL(url).hostname;
+  if (host !== want) {
+    throw new Error(`Preview URL hostname ${JSON.stringify(host)} does not match the expected hostname ${JSON.stringify(want)}`);
+  }
+  return url;
+}
+
+function parseArgs(argv) {
+  /** @type {{ expectHostname?: string, file?: string }} */
+  const options = {};
+  const args = argv.slice(2);
+  for (let i = 0; i < args.length; i += 1) {
+    const arg = args[i];
+    if (arg === '--expect-hostname') {
+      options.expectHostname = args[i + 1] ?? '';
+      i += 1;
+    } else if (arg.startsWith('--expect-hostname=')) {
+      options.expectHostname = arg.slice('--expect-hostname='.length);
+    } else if (arg.startsWith('--')) {
+      throw new Error(`unknown option ${arg}`);
+    } else if (options.file === undefined) {
+      options.file = arg;
+    } else {
+      throw new Error(`unexpected argument ${arg}`);
+    }
+  }
+  return options;
+}
+
 function main(argv) {
-  const source = argv[2] ? readFileSync(argv[2], 'utf8') : readFileSync(0, 'utf8');
-  const url = extractPreviewUrl(source);
+  const { expectHostname, file } = parseArgs(argv);
+  const source = file !== undefined ? readFileSync(file, 'utf8') : readFileSync(0, 'utf8');
+  let url = extractPreviewUrl(source);
+  if (expectHostname !== undefined) url = assertHostname(url, expectHostname);
   process.stdout.write(`${url}\n`);
 }
 

@@ -9,16 +9,19 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 
-import { extractPreviewUrl, findJsonObjectSpans } from '../../scripts/extract-wrangler-preview-url.mjs';
+import { assertHostname, extractPreviewUrl, findJsonObjectSpans } from '../../scripts/extract-wrangler-preview-url.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const script = resolve(here, '../../scripts/extract-wrangler-preview-url.mjs');
 const fixture = readFileSync(resolve(here, '../fixtures/wrangler-preview/m2-smoke.stdout.txt'), 'utf8');
-const FIXTURE_URL = 'https://m2-smoke-ccso-portfolio.secc-biz.workers.dev';
+// The account's Workers subdomain in the captured output is replaced by `example-subdomain` (configuration, not a
+// fixture concern); everything else — progress lines, key names, ids, URL shape — is the real output.
+const FIXTURE_URL = 'https://m2-smoke-ccso-portfolio.example-subdomain.workers.dev';
+const FIXTURE_HOST = 'm2-smoke-ccso-portfolio.example-subdomain.workers.dev';
 
 /** Runs the CLI exactly as the preview job does: the captured stdout piped in, the URL expected on stdout. */
-function runCli(input) {
-  const result = spawnSync(process.execPath, [script], { input, encoding: 'utf8' });
+function runCli(input, args = []) {
+  const result = spawnSync(process.execPath, [script, ...args], { input, encoding: 'utf8' });
   return { status: result.status, stdout: result.stdout, stderr: result.stderr };
 }
 
@@ -108,6 +111,46 @@ test('braces inside JSON strings do not end a span', () => {
   const spans = findJsonObjectSpans(text);
   assert.equal(spans[0][0], 0);
   assert.equal(spans[0][1], text.length);
+});
+
+test('--expect-hostname: the exact Preview hostname is accepted (case-insensitively)', () => {
+  assert.equal(runCli(fixture, ['--expect-hostname', FIXTURE_HOST]).status, 0);
+  assert.equal(runCli(fixture, [`--expect-hostname=${FIXTURE_HOST}`]).stdout, `${FIXTURE_URL}\n`);
+  assert.equal(runCli(fixture, ['--expect-hostname', FIXTURE_HOST.toUpperCase()]).status, 0);
+  assert.equal(assertHostname(FIXTURE_URL, FIXTURE_HOST), FIXTURE_URL);
+});
+
+test('--expect-hostname: any other hostname fails closed with an empty stdout', () => {
+  const cases = [
+    'pr-1-ccso-portfolio.example-subdomain.workers.dev', // another Preview of the same Worker
+    'm2-smoke-ccso-portfolio.other-account.workers.dev', // another account's subdomain
+    'example-subdomain.workers.dev', // a bare suffix is not a match
+    'm2-smoke-ccso-portfolio.example-subdomain.workers.dev.attacker.example', // expected host as a prefix
+    'x.m2-smoke-ccso-portfolio.example-subdomain.workers.dev', // expected host as a suffix
+  ];
+  for (const host of cases) {
+    const { status, stdout, stderr } = runCli(fixture, ['--expect-hostname', host]);
+    assert.equal(status, 1, host);
+    assert.equal(stdout, '', host);
+    assert.match(stderr, /does not match the expected hostname/, host);
+  }
+});
+
+test('--expect-hostname: a missing or malformed expectation fails before the URL is emitted', () => {
+  for (const args of [['--expect-hostname'], ['--expect-hostname', ''], ['--expect-hostname=pr-1-ccso-portfolio..workers.dev'], ['--expect-hostname', 'has space.workers.dev']]) {
+    const { status, stdout, stderr } = runCli(fixture, args);
+    assert.equal(status, 1, JSON.stringify(args));
+    assert.equal(stdout, '', JSON.stringify(args));
+    assert.match(stderr, /expected hostname/, JSON.stringify(args));
+  }
+  assert.throws(() => assertHostname(FIXTURE_URL, 'pr-1-ccso-portfolio..workers.dev'), /not a valid hostname/);
+});
+
+test('unknown options are rejected', () => {
+  const { status, stdout, stderr } = runCli(fixture, ['--bogus']);
+  assert.equal(status, 1);
+  assert.equal(stdout, '');
+  assert.match(stderr, /unknown option/);
 });
 
 test('file-path argument form reads the same output', () => {
