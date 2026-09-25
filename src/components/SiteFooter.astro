@@ -1,24 +1,30 @@
 ---
 import { identity, nav, contact } from '../data/site';
 const year = new Date().getFullYear();
+// Identity + lightweight contact links (§32, §33) — the site's only footer contact treatment; no CTA copy.
+// Only links with a real destination render (the shared footer never shows a placeholder): `contact.linkedin`
+// is empty until the TODO in src/data/site.ts is filled, and LinkedIn then appears between GitHub and Email
+// without touching this component.
+const links = [
+  { label: 'GitHub / Feuer', href: contact.github, external: true },
+  { label: 'LinkedIn', href: contact.linkedin, external: true },
+  { label: 'Email', href: `mailto:${contact.email}`, external: false },
+].filter((l) => l.href);
 ---
 <footer class="site-footer">
   <div class="container">
-    <section class="foot-cta card">
-      <p class="eyebrow">Contact</p>
-      <h2 class="foot-cta__h">Have a problem worth solving well?</h2>
-      <p class="lead">Business transformation · applied AI · evaluation · governance · adoption.</p>
-      <div class="foot-cta__actions">
-        <a class="btn btn--primary" href={`mailto:${contact.email}`}>Email {contact.email}</a>
-        <a class="btn btn--ghost" href={contact.github} target="_blank" rel="noopener">GitHub / Feuer</a>
-      </div>
-    </section>
-
     <div class="foot-grid">
       <div class="foot-id">
-        <p class="brand__name mono">{identity.name}</p>
-        <p class="subtle">{identity.role}</p>
+        <p class="foot-id__line"><span class="mono">{identity.name}</span><span class="subtle"> — {identity.role}</span></p>
         <p class="subtle foot-alias">{identity.githubAliasNote}</p>
+        <p class="foot-links">
+          {links.map((l, i) => (
+            <>
+              {i > 0 && <span class="subtle" aria-hidden="true">·</span>}
+              <a href={l.href} target={l.external ? '_blank' : undefined} rel={l.external ? 'noopener' : undefined}>{l.label}</a>
+            </>
+          ))}
+        </p>
       </div>
       <nav class="foot-nav" aria-label="Footer">
         {nav.map((i) => <a href={i.href}>{i.label}{('soon' in i && i.soon) && <span class="foot-soon">Soon</span>}</a>)}
@@ -30,11 +36,13 @@ const year = new Date().getFullYear();
 </footer>
 <style>
   .site-footer { border-top: 1px solid var(--c-border); margin-top: 4rem; padding-block: 3.5rem 2.5rem; }
-  .foot-cta { padding: 2rem; display: flex; flex-direction: column; gap: 0.6rem; align-items: flex-start; }
-  .foot-cta__h { font-size: var(--text-2xl); }
-  .foot-cta__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.75rem; }
-  .foot-grid { display: flex; flex-wrap: wrap; gap: 2rem; justify-content: space-between; margin-top: 2.5rem; }
+  .foot-grid { display: flex; flex-wrap: wrap; gap: 2rem; justify-content: space-between; }
+  .foot-id__line { font-weight: var(--weight-semibold); }
+  .foot-id__line .subtle { font-weight: var(--weight-normal); }
   .foot-alias { max-width: 22rem; margin-top: 0.5rem; }
+  .foot-links { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.85rem; font-size: var(--text-sm); }
+  .foot-links a { color: var(--c-fg-muted); }
+  .foot-links a:hover { color: var(--c-accent); }
   .foot-nav { display: grid; grid-template-columns: repeat(2, auto); gap: 0.5rem 2rem; }
   .foot-nav a { color: var(--c-fg-muted); font-size: var(--text-sm); display: inline-flex; align-items: center; gap: 0.35rem; }
   .foot-soon { font-family: var(--font-mono); font-size: 0.55rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c-accent-dim); }
