@@ -5,13 +5,20 @@ name = "ccso-portfolio"
 compatibility_date = "2026-09-01"
 
 # M2.5: temporary production on <name>.<subdomain>.workers.dev. Set to false at M3, once the custom domain
-# is the only canonical host; keep preview_urls so Preview URLs stay available on workers.dev.
+# is the only canonical host.
 workers_dev = true
-preview_urls = true
+# Version / Preview URL routing on workers.dev (the subdomain's `previews_enabled` flag) is explicitly OFF:
+# automated pull-request Previews are on hold since 2026-09-25 — a deleted Preview's alias kept routing
+# (cloudflare/developer-platform#73). `wrangler deploy` pushes this key to the account whenever it is present
+# (a `true` here would re-enable the routing) and leaves the setting untouched when it is omitted, so the explicit
+# `false` makes every future deploy enforce the hold. Re-enabling Previews = this key back to true + the
+# repository variable CLOUDFLARE_PREVIEW_ENABLED (docs/DECISIONS.md, "2026-09-25 — M2 Preview hold").
+preview_urls = false
 
 # Worker Previews (M2, Wrangler ≥ 4.135): the `previews` block is required even when empty — Previews do not
 # inherit production settings, and static assets stay at the top level (uploaded with each Preview).
-# A Preview can be created before the Worker's first production deploy.
+# A Preview can be created before the Worker's first production deploy. This block is Preview *configuration*
+# (bindings / vars for `wrangler preview`); it does not enable Preview URL routing — that is `preview_urls` above.
 previews = { }
 
 [assets]
