@@ -2,7 +2,8 @@ name: ci
 
 # Production pipeline. `verify` and `e2e` are the required checks: type-check, build, verify dist/ against the
 # route-state policy (scripts/verify-dist.mjs), then the Playwright smoke against `wrangler dev`.
-# `preview` (same-repository PRs) and `deploy` (main) ship the exact dist/ that passed `verify`. They are gated by
+# `preview` (same-repository PRs) ships the exact dist/ that passed `verify`; `deploy` (main) ships it only after `verify`
+# and `e2e` have both passed on that push. They are gated by
 # two independent repository variables so that enabling pull-request Previews can never production-deploy:
 #   CLOUDFLARE_PREVIEW_ENABLED = "true"  → `preview` here + preview-cleanup.yml            (M2)
 #   CLOUDFLARE_DEPLOY_ENABLED  = "true"  → `deploy` (production, push to main)             (M2.5)
@@ -147,10 +148,12 @@ jobs:
           BODY: "Preview `pr-${{ github.event.pull_request.number }}`: ${{ steps.preview.outputs.url }} (built from ${{ github.event.pull_request.head.sha }}; the dist that passed `verify` and the Preview smoke; noindex)"
         run: gh pr comment "$PR" --edit-last --body "$BODY" || gh pr comment "$PR" --body "$BODY"
 
-  # M2.5 / M3 — production deploy of the verified artifact on every push to main.
+  # M2.5 / M3 — production deploy of the verified artifact on every push to main, and only after `verify` AND `e2e`
+  # have both passed on that push: the ruleset gates the pull request (`strict: false`), but the SHA that actually
+  # deploys is the merge commit, so its own checks are the gate here — verify → e2e → deploy → production smoke.
   deploy:
     name: deploy (production)
-    needs: verify
+    needs: [verify, e2e]
     if: >-
       github.event_name != 'pull_request' &&
       github.ref == 'refs/heads/main' &&
@@ -181,7 +184,9 @@ jobs:
       # Two lessons from the first production deploy (2026-09-25, run 36147964561, both attempts red on this step while
       # `wrangler deploy` succeeded): (1) the deploy that enables a Worker's workers.dev route for the first time
       # returns before the route serves — the smoke's first request, 0.4 s after "Deployed", still got the pre-deploy
-      # 404 — so the host is polled, bounded, until it answers 200 (a host that never does still fails below);
+      # 404 — so the host is polled until it answers 200, genuinely bounded: 24 attempts, 5 s apart, every request with
+      # its own connect / total timeout (worst case ≈ 6 min), one status line per attempt, and on exhaustion an explicit
+      # ::error:: with the last observed status (a host that never answers 200 fails here, before any contract check);
       # (2) `curl … | grep -q` under `set -o pipefail` fails with curl's exit 23 whenever grep matches before curl has
       # written the whole body (the homepage is ~30 KB): a false negative on every run. The checks are therefore the
       # same scripts/smoke-preview.sh that gates Previews — one request per check, per-check output, the robots meta
@@ -193,10 +198,15 @@ jobs:
           BASE: ${{ vars.PRODUCTION_URL }}
         run: |
           set -euo pipefail
+          status=000
           for attempt in $(seq 1 24); do
-            status="$(curl -s -o /dev/null -w '%{http_code}' "$BASE/" || echo 000)"
-            echo "readiness $attempt/24: GET $BASE/ → $status"
-            [ "$status" = "200" ] && break
-            sleep 5
+            status="$(curl -s -o /dev/null --connect-timeout 5 --max-time 10 -w '%{http_code}' "$BASE/" || true)"
+            echo "readiness $attempt/24: GET $BASE/ → ${status:-000}"
+            if [ "$status" = "200" ]; then break; fi
+            if [ "$attempt" -lt 24 ]; then sleep 5; fi
           done
+          if [ "$status" != "200" ]; then
+            echo "::error::production readiness: $BASE/ did not answer 200 within 24 attempts (last observed status: ${status:-000})"
+            exit 1
+          fi
           bash scripts/smoke-preview.sh "$BASE"
