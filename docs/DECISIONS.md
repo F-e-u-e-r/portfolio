@@ -2,6 +2,10 @@
 
 Concise decision log (newest first). Each entry: decision · rejected alternative · why.
 
+## 2026-09-26 — Custom Domain ownership / least-privilege exception (M3B)
+- **The `ccso.shsl.world` Custom Domain attachment is intentionally managed through the Cloudflare Dashboard; the repository does not declare `[[routes]]` for it.** Rejected: declaring `[[routes]] custom_domain = true` (PR #33) — reconciling the Custom Domain from Wrangler requires broader zone / Workers permissions than the deliberately Worker-scoped CI credential, and the attempt failed trigger reconciliation with Cloudflare API code 10084 (no outage); also rejected: broadening the CI token. Normal application deployments remain repository / CI-managed (`wrangler deploy` of the verified artifact, `workers.dev` trigger, readiness, shared smoke); the Dashboard is the source of truth only for the Custom Domain connection. Validated by a fully green production deployment after removing `[[routes]]` (`main` run 36167004068) with the custom domain still serving.
+- **The site-generated `robots.txt` (Astro endpoint, AI-crawler policy below) is the intended source of truth on every host; Cloudflare Bot Preference Sync remains off.** Why: with it on, the zone prepended a managed Content Signals block (blanket AI-crawler disallows, including `Google-Extended`, which this log leaves undecided) to the custom domain's `/robots.txt`; with it off, both hosts serve the build's file byte-for-byte.
+
 ## 2026-09-25 — Production delivery contract (M2.5, `workers.dev`)
 - **Production deploys from `main` only after the deploying SHA has passed both `verify` and `e2e` on that push** (`deploy (production)` `needs: [verify, e2e]`). Rejected: `needs: verify` alone. Why: the ruleset's required checks gate the pull request with `strict: false`, so the merge commit that actually deploys is checked only by its own `main` run.
 - **Production readiness is bounded before any contract check**: after `wrangler deploy`, poll `/` for 200 (24 attempts, 5 s apart, per-request connect / total timeouts, an explicit error with the last observed status on exhaustion). Why: the deploy that first enables a Worker's `workers.dev` route returns before the route serves (run 36147964561, attempt 1).
@@ -62,4 +66,4 @@ Full wording: [`reviews/2026-09-24-public-repo-metadata-review.md`](reviews/2026
 - Real content for all cases + about + journey milestones (MVP pass).
 - LinkedIn URL + hosted resume (`src/data/site.ts` TODO).
 - Google Fonts (Inter / JetBrains Mono) vs. current system stack.
-- Custom domain `ccso.shsl.world` (M3 — DNS migration + custom domain; production is live on `workers.dev` since M2.5, see "2026-09-25 — Production delivery contract"); automated Worker Previews on hold — see "2026-09-25 — M2 Preview hold"; `secc.studio` fully deferred by the owner's 2026-09-24 roadmap (no DNS change, no redirect).
+- Custom domain `ccso.shsl.world` attached and validated dual-host (M3B — see "2026-09-26 — Custom Domain ownership / least-privilege exception"); M3C = production endpoint cutover (`PRODUCTION_URL`) + `PUBLIC_SITE_INDEXABLE=true`, then M3D `workers.dev` retirement; automated Worker Previews on hold — see "2026-09-25 — M2 Preview hold"; `secc.studio` fully deferred by the owner's 2026-09-24 roadmap (no DNS change, no redirect).
