@@ -2,13 +2,14 @@
 import { identity, nav, contact } from '../data/site';
 const year = new Date().getFullYear();
 // Identity + lightweight contact links (§32, §33) — the site's only footer contact treatment; no CTA copy.
-// A link without a URL yet renders as "Soon" (the same rule /contact/ applies), so filling in
-// `contact.linkedin` in src/data/site.ts turns the label into a link without touching this component.
+// Only links with a real destination render (the shared footer never shows a placeholder): `contact.linkedin`
+// is empty until the TODO in src/data/site.ts is filled, and LinkedIn then appears between GitHub and Email
+// without touching this component.
 const links = [
   { label: 'GitHub / Feuer', href: contact.github, external: true },
   { label: 'LinkedIn', href: contact.linkedin, external: true },
   { label: 'Email', href: `mailto:${contact.email}`, external: false },
-];
+].filter((l) => l.href);
 ---
 <footer class="site-footer">
   <div class="container">
@@ -20,9 +21,7 @@ const links = [
           {links.map((l, i) => (
             <>
               {i > 0 && <span class="subtle" aria-hidden="true">·</span>}
-              {l.href
-                ? <a href={l.href} target={l.external ? '_blank' : undefined} rel={l.external ? 'noopener' : undefined}>{l.label}</a>
-                : <span class="subtle">{l.label} <span class="foot-soon">Soon</span></span>}
+              <a href={l.href} target={l.external ? '_blank' : undefined} rel={l.external ? 'noopener' : undefined}>{l.label}</a>
             </>
           ))}
         </p>
