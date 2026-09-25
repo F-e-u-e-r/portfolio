@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CaseCard from '../components/CaseCard.astro';
 import StatusBadge from '../components/StatusBadge.astro';
-import { identity, capabilities, principles, contact } from '../data/site';
+import { identity, capabilities, principles } from '../data/site';
 import { spine, buildStream } from '../data/journey';
 
 const allCases = await getCollection('cases');
@@ -151,26 +151,9 @@ const capEvidence = capabilities.map((cap) => ({
       </div>
     </div>
   </section>
-
-  <!-- About teaser (§4, §31) -->
-  <section class="section container">
-    <div class="about-teaser card">
-      <p class="eyebrow">About</p>
-      <p class="about-teaser__text">{identity.thesis}</p>
-      <a class="btn btn--ghost" href="/about/">More about me</a>
-    </div>
-  </section>
-
-  <!-- Contact / CTA (§4, §33) -->
-  <section class="section--tight container">
-    <div class="home-cta">
-      <h2>Explore the case studies, or get in touch.</h2>
-      <div class="hero__actions">
-        <a class="btn btn--primary" href="/case-studies/">Explore case studies</a>
-        <a class="btn btn--ghost" href={`mailto:${contact.email}`}>Email {contact.email}</a>
-      </div>
-    </div>
-  </section>
+  <!-- The page ends here, on evidence. About (§31) and Contact (§33) are destinations — /about/, /contact/, the
+       header and footer navigation, and the footer identity line — not repeated homepage CTAs (owner decision
+       2026-09-25, docs/DECISIONS.md). -->
 </BaseLayout>
 
 <style>
@@ -240,13 +223,6 @@ const capEvidence = capabilities.map((cap) => ({
   .teaser__list li { display: flex; justify-content: space-between; gap: 1rem; font-size: var(--text-sm); border-bottom: 1px solid var(--c-border); padding-bottom: 0.5rem; }
   .teaser p.muted { margin-top: 0.85rem; font-size: var(--text-sm); }
   .soon-tag { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-accent-contrast); background: var(--c-accent-dim); border-radius: var(--radius-pill); padding: 0.1rem 0.45rem; margin-left: 0.4rem; vertical-align: middle; }
-
-  /* About teaser + CTA */
-  .about-teaser { padding: 2.25rem; text-align: center; }
-  .about-teaser__text { font-size: var(--text-xl); max-width: 48rem; margin: 0.75rem auto 1.5rem; text-wrap: balance; }
-  .home-cta { text-align: center; padding: 2rem 0; }
-  .home-cta h2 { font-size: var(--text-2xl); }
-  .home-cta .hero__actions { justify-content: center; }
 
   @media (max-width: 900px) {
     .cap-strip, .cap-evidence { grid-template-columns: repeat(2, 1fr); }
