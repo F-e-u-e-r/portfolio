@@ -30,11 +30,13 @@ not_found_handling = "404-page"
 # because it is the production contract that astro `trailingSlash: 'always'` and the dist gate assume.
 html_handling = "auto-trailing-slash"
 
-# M3B — Custom Domain (shsl.world is an active Cloudflare zone; M3A preflight 2026-09-26: Path A, no nameserver
-# migration, DNSSEC off, no CNAME on the hostname). The domain was attached once through the Cloudflare dashboard
-# (bootstrap: Cloudflare created the proxied DNS record and the Advanced Certificate); from here this block is the
-# durable source of truth — `wrangler deploy` asserts the attachment on every deploy. Exact hostname only (Custom
-# Domains take no wildcards); pre-launch the pages stay `noindex, nofollow` until PUBLIC_SITE_INDEXABLE=true (M3C).
-[[routes]]
-pattern = "ccso.shsl.world"
-custom_domain = true
+# M3B — Custom Domain ccso.shsl.world is attached through the Cloudflare DASHBOARD and is deliberately NOT declared
+# in this file (recorded exception). shsl.world is an active Cloudflare zone (M3A preflight 2026-09-26: Path A, no
+# nameserver migration, DNSSEC off, no CNAME on the hostname); the dashboard attachment created the proxied DNS
+# record and the Advanced Certificate. The CI credential remains deliberately Worker-scoped (least privilege), and
+# reconciling a Custom Domain from a `[[routes]]` block makes `wrangler deploy` call the Workers custom-domains API,
+# which currently requires broader zone / Worker permissions than this repository grants CI — the 2026-09-26 attempt
+# ended with `The zone "ccso.shsl.world" does not exist on your account [code: 10084]` and a partially applied
+# trigger update. Normal Worker deployments therefore must not attempt to manage the Custom Domain connection:
+# no `[[routes]]` block here; the dashboard is the source of truth for the attachment, this file for everything else.
+# Pre-launch the pages stay `noindex, nofollow` on both hosts until PUBLIC_SITE_INDEXABLE=true (M3C).
