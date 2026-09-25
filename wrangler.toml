@@ -4,8 +4,9 @@
 name = "ccso-portfolio"
 compatibility_date = "2026-09-01"
 
-# M2.5: temporary production on <name>.<subdomain>.workers.dev. Set to false at M3, once the custom domain
-# is the only canonical host.
+# M2.5: production on <name>.<subdomain>.workers.dev — kept true through M3B / M3C as the rollback host while the
+# Custom Domain below is validated; set to false only at M3D, once ccso.shsl.world is the CI-observed production
+# endpoint (PRODUCTION_URL) and the only canonical host.
 workers_dev = true
 # Version / Preview URL routing on workers.dev (the subdomain's `previews_enabled` flag) is explicitly OFF:
 # automated pull-request Previews are on hold since 2026-09-25 — a deleted Preview's alias kept routing
@@ -29,7 +30,11 @@ not_found_handling = "404-page"
 # because it is the production contract that astro `trailingSlash: 'always'` and the dist gate assume.
 html_handling = "auto-trailing-slash"
 
-# M3 — added only after shsl.world is an active Cloudflare zone (deploy-readiness D-1):
-# [[routes]]
-# pattern = "ccso.shsl.world"
-# custom_domain = true
+# M3B — Custom Domain (shsl.world is an active Cloudflare zone; M3A preflight 2026-09-26: Path A, no nameserver
+# migration, DNSSEC off, no CNAME on the hostname). The domain was attached once through the Cloudflare dashboard
+# (bootstrap: Cloudflare created the proxied DNS record and the Advanced Certificate); from here this block is the
+# durable source of truth — `wrangler deploy` asserts the attachment on every deploy. Exact hostname only (Custom
+# Domains take no wildcards); pre-launch the pages stay `noindex, nofollow` until PUBLIC_SITE_INDEXABLE=true (M3C).
+[[routes]]
+pattern = "ccso.shsl.world"
+custom_domain = true
