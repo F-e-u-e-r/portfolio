@@ -4,7 +4,7 @@
 // Plain ESM so the Astro config can import it without a TypeScript loader.
 
 /** Routes that exist in the IA but whose content has not launched: 200 + noindex, nofollow, never in the sitemap. */
-export const PLACEHOLDER_ROUTES = ['/about/', '/internal-builds/', '/writing/', '/topics/'];
+export const PLACEHOLDER_ROUTES = ['/about/', '/writing/', '/topics/'];
 
 /** Degraded-state page: 200 + noindex, nofollow, never in the sitemap. */
 export const MAINTENANCE_ROUTES = ['/under-maintenance/'];

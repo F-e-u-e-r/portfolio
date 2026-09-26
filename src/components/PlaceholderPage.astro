@@ -3,6 +3,8 @@
 // HTTP 200, robots noindex, nofollow, never in the sitemap. The route must also be listed in
 // PLACEHOLDER_ROUTES (src/data/routes.mjs) — BaseLayout and the dist gate enforce the policy from there,
 // so a page cannot be indexable by accident. Not to be confused with /under-maintenance/ (degraded service).
+// A placeholder never promises a specific unpublished item (docs/DECISIONS.md, 2026-09-27) and is not linked
+// from the public navigation until its content is substantive.
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 interface Props {
@@ -12,8 +14,6 @@ interface Props {
   /** Lead line; the recommended copy is the default. */
   message?: string;
   plannedContent?: string[];
-  /** A concrete planned-but-unpublished item, e.g. the first article. Never presented as published. */
-  firstItem?: { label: string; title: string; note?: string };
   backLink?: { href: string; label: string };
   active?: string;
 }
@@ -23,7 +23,6 @@ const {
   description,
   message = 'This section is being prepared.',
   plannedContent = [],
-  firstItem,
   backLink = { href: '/', label: 'Return home' },
   active,
 } = Astro.props;
@@ -42,22 +41,16 @@ const {
         </ul>
       </div>
     )}
-    {firstItem && (
-      <p class="first subtle">
-        {firstItem.label}: <em>{firstItem.title}</em>{firstItem.note && <> — {firstItem.note}</>}
-      </p>
-    )}
     <p class="foot subtle">Nothing in this section is published yet. <a href={backLink.href}>{backLink.label}</a></p>
   </section>
 </BaseLayout>
 <style>
   .page-head { margin-bottom: 2rem; }
   .page-head h1 { font-size: var(--text-3xl); margin: 0.5rem 0 0.75rem; text-wrap: balance; }
-  .state-tag { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-accent-contrast); background: var(--c-accent-dim); border-radius: var(--radius-pill); padding: 0.12rem 0.5rem; margin-left: 0.5rem; vertical-align: middle; }
+  .state-tag { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-accent-contrast); background: var(--c-accent-dim); border-radius: var(--radius-pill); padding: 0.1rem 0.5rem; margin-left: 0.5rem; vertical-align: middle; }
   .panel { padding: 1.75rem; }
   .planned { columns: 2; column-gap: 2rem; padding-left: 1.1rem; margin-top: 1rem; color: var(--c-fg-muted); }
   .planned li { margin-bottom: 0.5rem; break-inside: avoid; }
-  .first { margin-top: 1.5rem; }
   .foot { margin-top: 1.5rem; font-size: var(--text-sm); }
   @media (max-width: 640px) { .planned { columns: 1; } }
 </style>

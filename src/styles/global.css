@@ -15,8 +15,12 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+/* Full-height page shell: header · main (grows) · footer. A short page's footer therefore ends at the viewport
+   bottom instead of leaving a dead band beneath it; long pages scroll exactly as before (min-height, not height). */
 body {
   min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
   background:
     radial-gradient(1200px 800px at 50% -10%, rgba(53, 224, 161, 0.06), transparent 60%),
     linear-gradient(180deg, var(--c-bg-2), var(--c-bg) 40%);
@@ -28,6 +32,7 @@ body {
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
 }
+body > main { flex: 1 0 auto; }
 
 img, svg, video, canvas { display: block; max-width: 100%; height: auto; }
 
@@ -37,6 +42,14 @@ a {
   transition: color var(--dur-fast) var(--ease-out);
 }
 a:hover { color: var(--c-accent); }
+/* Text links show an underline on hover / keyboard focus, so clickability never rests on colour alone (eyebrows
+   share the green family). Buttons, card links, the header brand and nav keep their own affordances. */
+a:where(:not(.btn, .card, .brand, .nav__link, .skip-link)):hover,
+a:where(:not(.btn, .card, .brand, .nav__link, .skip-link)):focus-visible {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
 
 h1, h2, h3, h4 {
   line-height: var(--leading-tight);
@@ -78,7 +91,7 @@ p { text-wrap: pretty; }
   font-size: var(--text-xs);
   text-transform: uppercase;
   letter-spacing: var(--tracking-mono);
-  color: var(--c-accent);
+  color: var(--c-accent-muted);
   font-weight: var(--weight-medium);
 }
 .muted  { color: var(--c-fg-muted); }

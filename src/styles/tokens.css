@@ -11,15 +11,18 @@
   --c-bg-2:          #0b0f0d;   /* page gradient stop / elevated bg */
   --c-surface:       #111815;   /* cards, header */
   --c-surface-2:     #16201c;   /* hover / nested */
-  --c-border:        rgba(120, 200, 170, 0.12);
+  --c-border:        rgba(120, 200, 170, 0.16);   /* card / row edges — measured 2026-09-27: surface vs page is only 1.10:1, so the edge carries the separation */
   --c-border-strong: rgba(120, 200, 170, 0.24);
 
   --c-fg:            #e8efeb;
   --c-fg-muted:      #9aa8a2;
   --c-fg-subtle:     #828f88;   /* WCAG AA (≥4.5:1) on bg + all card surfaces */
 
+  /* Green hierarchy (2026-09-27): fills of --c-accent = primary interaction / decisive current state;
+     --c-accent as text = links / selected navigation; --c-accent-muted = eyebrows and decorative metadata. */
   --c-accent:          #35e0a1;   /* refined Matrix green */
   --c-accent-2:        #6bf0c0;
+  --c-accent-muted:    #27a97c;   /* quieter green for non-interactive labels — 6.6:1 on bg, 6.1:1 on card surfaces */
   --c-accent-dim:      #1f8f68;
   --c-accent-contrast: #04120c;   /* text on accent fills */
   --c-glow:            rgba(53, 224, 161, 0.30);
@@ -41,6 +44,7 @@
 
   --text-xs:  0.75rem;
   --text-sm:  0.875rem;
+  --text-md:  0.9375rem;   /* 15px — card body / secondary descriptions (desktop readability pass, 2026-09-27) */
   --text-base: 1rem;
   --text-lg:  1.125rem;
   --text-xl:  1.375rem;

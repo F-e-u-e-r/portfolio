@@ -1,23 +1,22 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { contact } from '../../data/site';
-// Only links with a real destination render — the shared footer's rule (docs/DECISIONS.md, 2026-09-26 M4-0a):
-// no disabled "Coming soon" / "View Resume" rows on the public page. The LinkedIn and Resume rows appear
-// once `contact.linkedin` / `contact.resume` are set in src/data/site.ts.
+// Neutral utility page (docs/DECISIONS.md, 2026-09-27 — pure evidence portfolio): the channels that exist, stated
+// factually — no invitation, no response-time promise, no public resume. Only links with a real destination
+// render (the shared footer's rule), so the optional LinkedIn row appears only once `contact.linkedin` is set in
+// src/data/site.ts.
 const bare = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
 const links = [
   { label: 'Email', value: contact.email, href: `mailto:${contact.email}` },
   { label: 'GitHub / Feuer', value: bare(contact.github), href: contact.github },
   { label: 'LinkedIn', value: bare(contact.linkedin), href: contact.linkedin },
-  { label: 'Resume', value: 'View Resume', href: contact.resume },
 ].filter((l) => l.href);
 ---
-<BaseLayout title="Contact" description="Get in touch with Eric So — email and GitHub (Feuer)." active="/contact/" boot={false}>
+<BaseLayout title="Contact" description="Contact details for Eric So: email, and public builds on GitHub under the alias Feuer." active="/contact/" boot={false}>
   <section class="section container container--narrow">
     <header class="page-head">
-      <p class="eyebrow">Contact</p>
-      <h1>Get in touch.</h1>
-      <p class="lead">The fastest route is email. Public builds are on GitHub under my alias, Feuer.</p>
+      <h1>Contact</h1>
+      <p class="lead">Public builds are on GitHub under my alias, Feuer.</p>
     </header>
     <ul class="contacts">
       {links.map((l) => (
@@ -31,7 +30,7 @@ const links = [
 </BaseLayout>
 <style>
   .page-head { margin-bottom: 2rem; }
-  .page-head h1 { font-size: var(--text-3xl); margin: 0.5rem 0 0.75rem; }
+  .page-head h1 { font-size: var(--text-3xl); margin: 0 0 0.75rem; }
   .contacts { list-style: none; padding: 0; display: flex; flex-direction: column; }
   .contact-row { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--c-border); }
   .contact-row__label { color: var(--c-fg-subtle); font-size: var(--text-sm); }
