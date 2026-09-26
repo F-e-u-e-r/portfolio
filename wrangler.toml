@@ -7,7 +7,7 @@ compatibility_date = "2026-09-01"
 # M2.5: production on <name>.<subdomain>.workers.dev — kept true through M3B / M3C as the rollback host while the
 # Custom Domain below is validated; set to false only at M3D, once ccso.shsl.world is the CI-observed production
 # endpoint (PRODUCTION_URL) and the only canonical host.
-workers_dev = true
+workers_dev = false
 # Version / Preview URL routing on workers.dev (the subdomain's `previews_enabled` flag) is explicitly OFF:
 # automated pull-request Previews are on hold since 2026-09-25 — a deleted Preview's alias kept routing
 # (cloudflare/developer-platform#73). `wrangler deploy` pushes this key to the account whenever it is present
