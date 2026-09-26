@@ -12,12 +12,15 @@ const indexable = parseIndexable(process.env.PUBLIC_SITE_INDEXABLE);
 const HOME_TITLE = 'Eric So — Business Transformation & Applied AI';
 const TITLE_SUFFIX = ' | Eric So';
 const REQUIRED_ARTIFACTS = ['index.html', '404.html', 'robots.txt', 'sitemap-index.xml', 'og.png', 'favicon.svg', 'apple-touch-icon.png'];
+// robots.txt groups, in order, exactly as src/pages/robots.txt.ts emits them (DECISIONS 2026-09-24 + 2026-09-26):
+// search / discovery allowed, training reuse disallowed; Cloudflare's /cdn-cgi/ excluded in every allow group.
 const ROBOTS_TXT_POLICY = [
-  'User-agent: *\nAllow: /',
-  'User-agent: OAI-SearchBot\nAllow: /',
-  'User-agent: Claude-SearchBot\nAllow: /',
+  'User-agent: *\nAllow: /\nDisallow: /cdn-cgi/',
+  'User-agent: OAI-SearchBot\nAllow: /\nDisallow: /cdn-cgi/',
+  'User-agent: Claude-SearchBot\nAllow: /\nDisallow: /cdn-cgi/',
   'User-agent: GPTBot\nDisallow: /',
   'User-agent: ClaudeBot\nDisallow: /',
+  'User-agent: Google-Extended\nDisallow: /',
 ];
 
 const failures = [];
@@ -139,9 +142,13 @@ if (existsSync(sitemapIndex)) {
 const robotsTxtPath = join(DIST, 'robots.txt');
 if (existsSync(robotsTxtPath)) {
   const txt = readFileSync(robotsTxtPath, 'utf8');
-  for (const block of ROBOTS_TXT_POLICY) check(txt.includes(block), `robots.txt is missing the block:\n${block}`);
-  check(!/Google-Extended/.test(txt), 'robots.txt must not mention Google-Extended (decision still open)');
-  const hasSitemap = txt.includes(`Sitemap: ${SITE}/sitemap-index.xml`);
+  // Exact, ordered comparison: every policy group, nothing else, and the sitemap advertised only in launch mode.
+  const groups = txt.trim().split(/\n{2,}/);
+  const expected = indexable ? [...ROBOTS_TXT_POLICY, `Sitemap: ${SITE}/sitemap-index.xml`] : ROBOTS_TXT_POLICY;
+  for (const block of ROBOTS_TXT_POLICY) check(groups.includes(block), `robots.txt is missing the group:\n${block}`);
+  check(groups.length === expected.length, `robots.txt has ${groups.length} groups, policy expects ${expected.length}`);
+  check(groups.every((g, i) => g === expected[i]), 'robots.txt groups must match the policy exactly and in order');
+  const hasSitemap = groups.includes(`Sitemap: ${SITE}/sitemap-index.xml`);
   check(hasSitemap === indexable, indexable ? 'robots.txt must advertise the sitemap when PUBLIC_SITE_INDEXABLE=true' : 'pre-launch robots.txt must not advertise the sitemap');
 }
 
