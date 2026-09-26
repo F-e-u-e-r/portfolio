@@ -46,6 +46,7 @@ const links = [
   .foot-nav { display: grid; grid-template-columns: repeat(2, auto); gap: 0.5rem 2rem; }
   .foot-nav a { color: var(--c-fg-muted); font-size: var(--text-sm); display: inline-flex; align-items: center; gap: 0.35rem; }
   .foot-legal { margin-top: 2.5rem; font-size: var(--text-xs); }
-  /* Clear the fixed desktop pet (§14) so it never sits on the copyright line. */
-  @media (min-width: 1025px) { .site-footer { padding-bottom: 5rem; } }
+  /* No extra bottom clearance for the fixed desktop mascot (§14): it renders only at ≥ 1280 px, where every footer
+     text block starts ≥ 96 px from the viewport edge while the sprite spans 16–76 px (re-measured 2026-09-27,
+     M4-1.5; the 16 px clearance contract lives in tests/e2e/pet.spec.ts). */
 </style>
