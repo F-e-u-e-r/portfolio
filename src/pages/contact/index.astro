@@ -1,14 +1,18 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { contact } from '../../data/site';
+// Only links with a real destination render — the shared footer's rule (docs/DECISIONS.md, 2026-09-26 M4-0a):
+// no disabled "Coming soon" / "View Resume" rows on the public page. The LinkedIn and Resume rows appear
+// once `contact.linkedin` / `contact.resume` are set in src/data/site.ts.
+const bare = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
 const links = [
-  { label: 'Email', value: contact.email, href: `mailto:${contact.email}`, ready: true },
-  { label: 'GitHub / Feuer', value: 'github.com/F-e-u-e-r', href: contact.github, ready: true },
-  { label: 'LinkedIn', value: 'Coming soon', href: contact.linkedin, ready: Boolean(contact.linkedin) },
-  { label: 'Resume', value: 'View Resume', href: contact.resume, ready: Boolean(contact.resume) },
-];
+  { label: 'Email', value: contact.email, href: `mailto:${contact.email}` },
+  { label: 'GitHub / Feuer', value: bare(contact.github), href: contact.github },
+  { label: 'LinkedIn', value: bare(contact.linkedin), href: contact.linkedin },
+  { label: 'Resume', value: 'View Resume', href: contact.resume },
+].filter((l) => l.href);
 ---
-<BaseLayout title="Contact" description="Get in touch with Eric So — email, GitHub (Feuer), LinkedIn and resume." active="/contact/" boot={false}>
+<BaseLayout title="Contact" description="Get in touch with Eric So — email and GitHub (Feuer)." active="/contact/" boot={false}>
   <section class="section container container--narrow">
     <header class="page-head">
       <p class="eyebrow">Contact</p>
@@ -19,9 +23,7 @@ const links = [
       {links.map((l) => (
         <li class="contact-row">
           <span class="contact-row__label mono">{l.label}</span>
-          {l.ready
-            ? <a class="contact-row__val" href={l.href} target={l.href.startsWith('http') ? '_blank' : undefined} rel="noopener">{l.value} →</a>
-            : <span class="contact-row__val subtle">{l.value}</span>}
+          <a class="contact-row__val" href={l.href} target={l.href.startsWith('http') ? '_blank' : undefined} rel="noopener">{l.value} →</a>
         </li>
       ))}
     </ul>
