@@ -3,8 +3,8 @@ import { identity, nav, contact } from '../data/site';
 const year = new Date().getFullYear();
 // Identity + lightweight contact links (§32, §33) — the site's only footer contact treatment; no CTA copy.
 // Only links with a real destination render (the shared footer never shows a placeholder): `contact.linkedin`
-// is empty until the TODO in src/data/site.ts is filled, and LinkedIn then appears between GitHub and Email
-// without touching this component.
+// is optional — not a v1 requirement (docs/DECISIONS.md, 2026-09-27) — and, once set in src/data/site.ts,
+// LinkedIn appears between GitHub and Email without touching this component.
 const links = [
   { label: 'GitHub / Feuer', href: contact.github, external: true },
   { label: 'LinkedIn', href: contact.linkedin, external: true },
@@ -27,7 +27,7 @@ const links = [
         </p>
       </div>
       <nav class="foot-nav" aria-label="Footer">
-        {nav.map((i) => <a href={i.href}>{i.label}{('soon' in i && i.soon) && <span class="foot-soon">Soon</span>}</a>)}
+        {nav.map((i) => <a href={i.href}>{i.label}</a>)}
       </nav>
     </div>
 
@@ -45,7 +45,6 @@ const links = [
   .foot-links a:hover { color: var(--c-accent); }
   .foot-nav { display: grid; grid-template-columns: repeat(2, auto); gap: 0.5rem 2rem; }
   .foot-nav a { color: var(--c-fg-muted); font-size: var(--text-sm); display: inline-flex; align-items: center; gap: 0.35rem; }
-  .foot-soon { font-family: var(--font-mono); font-size: 0.55rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c-accent-dim); }
   .foot-legal { margin-top: 2.5rem; font-size: var(--text-xs); }
   /* Clear the fixed desktop pet (§14) so it never sits on the copyright line. */
   @media (min-width: 1025px) { .site-footer { padding-bottom: 5rem; } }

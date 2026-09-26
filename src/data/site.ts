@@ -37,18 +37,16 @@ export const capabilities = [
 
 export type CapabilityKey = (typeof capabilities)[number]['key'];
 
-// Information architecture (§3). `soon` marks Writing as "to be launched" (§28).
-// `primary` items show in the desktop header; the rest (Soon routes) live in the
-// footer + mobile menu — all remain reachable, but the header stays to 5 live sections.
+// Information architecture (§3). Public navigation lists only destinations with substantive content
+// (docs/DECISIONS.md, 2026-09-27 — pure evidence portfolio); the header, the mobile menu and the footer all
+// render this list. About returns when /about/ becomes substantive and indexable (M4-5); Writing returns when
+// at least one article is published; Topics stay deferred until the content graph justifies them. Internal
+// Builds was removed as a separate public silo — internal transformation evidence belongs in Case Studies.
 export const nav = [
-  { label: 'Case Studies', href: '/case-studies/', primary: true },
-  { label: 'Journey', href: '/journey/', primary: true },
-  { label: 'Lab', href: '/lab/', primary: true },
-  { label: 'Internal Builds', href: '/internal-builds/', soon: true },
-  { label: 'Writing', href: '/writing/', soon: true },
-  { label: 'Topics', href: '/topics/', soon: true },
-  { label: 'About', href: '/about/', primary: true },
-  { label: 'Contact', href: '/contact/', primary: true },
+  { label: 'Case Studies', href: '/case-studies/' },
+  { label: 'Journey', href: '/journey/' },
+  { label: 'Lab', href: '/lab/' },
+  { label: 'Contact', href: '/contact/' },
 ] as const;
 
 // Working principles (§30) — operating philosophy, each backed by case evidence.
@@ -60,12 +58,12 @@ export const principles = [
   'A solution is not complete until people can use it reliably.',
 ] as const;
 
-// Contact + primary links (§32, §33). TODO: real LinkedIn + hosted resume URL.
+// Contact + evidence links (§32, §33). Email and GitHub are the utility channels. LinkedIn is optional — not a v1
+// requirement (docs/DECISIONS.md, 2026-09-27) — and nothing renders while it is empty; there is no public resume.
 export const contact = {
   email: 'ccso@shsl.world',
   github: 'https://github.com/F-e-u-e-r',
-  linkedin: '', // TODO: LinkedIn profile URL
-  resume: '', // TODO: hosted resume (View Resume — secondary CTA, §33)
+  linkedin: '', // optional; the footer and /contact/ render it only when set
 } as const;
 
 // Status display metadata (§38): label + the CSS custom property that colours it.

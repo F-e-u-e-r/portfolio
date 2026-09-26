@@ -55,7 +55,7 @@ npm run check    # astro check (types + content schema)
 
 | Path | What lives there |
 | --- | --- |
-| [`src/pages/`](src/pages) | Routes — homepage, `case-studies/` (+ `[...slug]`), journey, lab, internal-builds, writing, topics, about, contact, under-maintenance, 404. |
+| [`src/pages/`](src/pages) | Routes — homepage, `case-studies/` (+ `[...slug]`), journey, lab, writing, topics, about, contact, under-maintenance, 404. |
 | [`src/content.config.ts`](src/content.config.ts) | Content Layer collections + Zod schema (§35). |
 | [`src/content/`](src/content) | `cases/` and `lab/` Markdown entries (placeholder). |
 | [`src/data/`](src/data) | `site.ts` (identity, nav, capabilities, principles, contact) and `journey.ts` (spine + build stream). |
